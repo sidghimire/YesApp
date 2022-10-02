@@ -11,6 +11,8 @@ import {
 } from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
+import {Picker} from '@react-native-picker/picker';
+
 const Register = () => {
   return (
     <KeyboardAvoidingView
@@ -47,14 +49,15 @@ const Register = () => {
               className="border p-4 rounded-xl my-3"
               style={{borderColor: '#3f3d56'}}
               placeholderTextColor="#6f6f6f"
-              placeholder="Password"
+              placeholder="Username"
             />
+            
           </View>
           <View className="flex flex-col mt-auto">
             <View className="flex flex-row mx-auto pb-5">
-              <Text className="mx-2">Don't have an account? </Text>
+              <Text className="mx-2">Already Have An Account? </Text>
               <TouchableOpacity className="mx-2" activeOpacity={0.8}>
-                <Text className="tracking-widest font-medium">Register</Text>
+                <Text className="tracking-widest font-medium">Sign in</Text>
               </TouchableOpacity>
             </View>
 
@@ -63,7 +66,7 @@ const Register = () => {
               className=" rounded-xl h-16 mx-7 mb-7"
               style={{backgroundColor: '#3F3D56'}}>
               <Text className="mx-auto my-auto text-white font-light tracking-widest">
-                Sign In
+                Register
               </Text>
             </TouchableOpacity>
           </View>

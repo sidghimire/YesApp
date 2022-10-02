@@ -1,7 +1,11 @@
-import React from 'react';
-import Register from './src/views/screens/Register';
-import Signin from './src/views/screens/Signin';
-const App=()=>{
-  return(<Register/>)
+import { View, Text } from 'react-native'
+import React from 'react'
+import AdminSideNavigator from './src/routes/AdminSideNavigator'
+import AddRoom from './src/views/admin/screens/AddRoom'
+const App = () => {
+  return (
+    <AdminSideNavigator/>
+  )
 }
+
 export default App
