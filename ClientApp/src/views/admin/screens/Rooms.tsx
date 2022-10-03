@@ -1,12 +1,13 @@
 import {View, Text, TextInput, TouchableOpacity} from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
+import ToggleMenu from '../../../components/ToogleMenu';
 
-const Rooms = () => {
+const Rooms = ({navigation}) => {
   return (
     <View className="flex-1 bg-white p-5">
       <View className="flex flex-row">
-        <Icon name="menu" size={30} color="#000" />
+        <ToggleMenu navigation={navigation} />
         <Text className="text-black font-extrabold text-3xl my-auto mx-auto">
           Rooms
         </Text>
@@ -34,14 +35,16 @@ const Rooms = () => {
         Room List
       </Text>
       <View className="flex flex-row h-20">
-        <TouchableOpacity activeOpacity={0.7} className="border border-gray-300 rounded-xl flex-1 m-2">
+        <TouchableOpacity
+          activeOpacity={0.7}
+          className="border border-gray-300 rounded-xl flex-1 m-2">
           <View className="mx-auto my-auto flex flex-row">
             <Text>201</Text>
             <Icon
               name="star"
               size={15}
               color="#FFD700"
-              style={{marginLeft:5}}
+              style={{marginLeft: 5}}
             />
           </View>
         </TouchableOpacity>
@@ -84,6 +87,7 @@ const Rooms = () => {
         </TouchableOpacity>
       </View>
       <TouchableOpacity
+      onPress={()=>navigation.navigate("AddRoom")}
         activeOpacity={0.7}
         className="absolute bg-white rounded-full bottom-6 right-6">
         <Icon name="add-circle" size={80} color="#fa594e" />

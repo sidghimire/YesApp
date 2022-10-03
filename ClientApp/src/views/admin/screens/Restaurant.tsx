@@ -86,6 +86,7 @@ const Restaurant = ({navigation}) => {
         </TouchableOpacity>
       </View>
       <TouchableOpacity
+      onPress={()=>navigation.navigate("AddTable")}
         activeOpacity={0.7}
         className="absolute bg-white rounded-full bottom-6 right-6">
         <Icon name="add-circle" size={80} color="#fa594e" />

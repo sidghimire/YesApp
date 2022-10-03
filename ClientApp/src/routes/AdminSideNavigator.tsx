@@ -9,27 +9,28 @@ import Icon from 'react-native-vector-icons/Ionicons';
 import CompanyName from '../components/CompanyName';
 import Rooms from '../views/admin/screens/Rooms';
 import Restaurant from '../views/admin/screens/Restaurant';
+import RestaurantStack from './RestaurantStack';
+import RoomStack from './RoomStack';
 
 const Drawer = createDrawerNavigator();
 
 const AdminSideNavigator = () => {
 
   const CustomSidebar = (props) => {
-    console.log(props)
     return (
       <View className="p-5 flex flex-col h-full ">
         <Text className="text-2xl text-black tracking-widest mb-10">
           Categories
         </Text>
-        <TouchableOpacity activeOpacity={0.7} className="flex flex-row my-3">
+        <TouchableOpacity activeOpacity={0.7} className="flex flex-row my-3" onPress={()=>props.navigation.navigate("AdminDashboard")} >
           <Icon name="grid" size={22} color="#3f3d56" />
           <Text className="text-black my-auto text-base ml-7">Dashboard</Text>
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.7} className="flex flex-row my-3" onPress={()=>props.navigation.navigate("Restaurant")}>
+        <TouchableOpacity activeOpacity={0.7} className="flex flex-row my-3" onPress={()=>props.navigation.navigate("RestaurantStack")}>
           <Icon name="pizza" size={22} color="#3f3d56" />
           <Text className="text-black my-auto text-base ml-7">Restaurant</Text>
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.7} className="flex flex-row my-3">
+        <TouchableOpacity activeOpacity={0.7} className="flex flex-row my-3" onPress={()=>props.navigation.navigate("RoomStack")}>
           <Icon name="bed" size={22} color="#3f3d56" />
           <Text className="text-black my-auto text-base ml-7">Rooms</Text>
         </TouchableOpacity>
@@ -94,9 +95,9 @@ const AdminSideNavigator = () => {
       screenOptions={{headerShown: false}}>
       <Drawer.Screen name="AdminDashboard" component={AdminDashboard} />
 
-      <Drawer.Screen name="Restaurant" component={Restaurant} />
+      <Drawer.Screen name="RestaurantStack" component={RestaurantStack} />
       <Drawer.Screen name="RestroMenu" component={RestroMenu} />
-      <Drawer.Screen name="Rooms" component={Rooms} />
+      <Drawer.Screen name="RoomStack" component={RoomStack} />
     </Drawer.Navigator>
   );
 };
