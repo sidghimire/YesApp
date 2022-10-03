@@ -7,20 +7,23 @@ import {
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
-  ScrollView
+  ScrollView,
 } from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {Picker} from '@react-native-picker/picker';
 
-const Register = () => {
+const Register = ({navigation}) => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       className="flex-1">
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <ScrollView className='h-full'>
-          <TouchableOpacity activeOpacity={0.7} className="mt-10 ml-5">
+        <ScrollView className="h-full">
+          <TouchableOpacity
+            activeOpacity={0.7}
+            className="mt-10 ml-5"
+            onPress={() => navigation.goBack()}>
             <Icon name="chevron-back-outline" size={40} color="#3f3d56" />
           </TouchableOpacity>
           <View>
@@ -51,12 +54,14 @@ const Register = () => {
               placeholderTextColor="#6f6f6f"
               placeholder="Username"
             />
-            
           </View>
           <View className="flex flex-col mt-auto">
             <View className="flex flex-row mx-auto pb-5">
               <Text className="mx-2">Already Have An Account? </Text>
-              <TouchableOpacity className="mx-2" activeOpacity={0.8}>
+              <TouchableOpacity
+                className="mx-2"
+                activeOpacity={0.8}
+                onPress={() => navigation.navigate('Signin')}>
                 <Text className="tracking-widest font-medium">Sign in</Text>
               </TouchableOpacity>
             </View>

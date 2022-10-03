@@ -10,14 +10,17 @@ import {
 } from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
-const Signin = () => {
+const Signin = ({navigation}) => {
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'height' : 'height'}
       className="flex-1">
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View className='' style={{justifyContent:'space-around'}}>
-          <TouchableOpacity activeOpacity={0.7} className="mt-10 ml-5">
+        <View className="" style={{justifyContent: 'space-around'}}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            className="mt-10 ml-5"
+            onPress={() => navigation.goBack()}>
             <Icon name="chevron-back-outline" size={40} color="#3f3d56" />
           </TouchableOpacity>
           <View className="my-10">
@@ -46,12 +49,16 @@ const Signin = () => {
           <View className="flex flex-col mt-32">
             <View className="flex flex-row mx-auto pb-5">
               <Text className="mx-2">Don't have an account? </Text>
-              <TouchableOpacity className="mx-2" activeOpacity={0.8}>
+              <TouchableOpacity
+                className="mx-2"
+                activeOpacity={0.8}
+                onPress={() => navigation.navigate('Register')}>
                 <Text className="tracking-widest font-medium">Register</Text>
               </TouchableOpacity>
             </View>
 
             <TouchableOpacity
+              onPress={() => navigation.navigate('AdminSideNavigator')}
               activeOpacity={0.8}
               className=" rounded-xl h-16 mx-7 mb-7"
               style={{backgroundColor: '#3F3D56'}}>
