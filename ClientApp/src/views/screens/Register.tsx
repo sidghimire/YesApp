@@ -9,11 +9,43 @@ import {
   Keyboard,
   ScrollView,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {Picker} from '@react-native-picker/picker';
+import {createUserWithEmailAndPassword, getAuth} from 'firebase/auth';
+
+const auth = getAuth();
 
 const Register = ({navigation}) => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
+  const [error, setError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+
+  const CreateAccount = ({navigation}) => {
+    if (email != '' && password != '' && username != '') {
+      createUserWithEmailAndPassword(auth, email, password)
+        .then(user => {
+          setEmail('');
+          setPassword('');
+          setUsername('');
+          navigation.navigate("")
+        })
+        .catch(error => {
+          setError(true);
+          setErrorMsg(error.code);
+          setEmail('');
+          setPassword('');
+          setUsername('');
+        });
+    } else {
+      setError(true);
+      setErrorMsg('Empty');
+      setEmail('');
+      setPassword('');
+      setUsername('');
+    }
+  };
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -41,18 +73,24 @@ const Register = ({navigation}) => {
               style={{borderColor: '#3f3d56'}}
               placeholderTextColor="#6f6f6f"
               placeholder="Email"
+              value={email}
+              onChangeText={text => setEmail(text)}
             />
             <TextInput
               className="border p-4 rounded-xl my-3"
               style={{borderColor: '#3f3d56'}}
               placeholderTextColor="#6f6f6f"
               placeholder="Password"
+              value={password}
+              onChangeText={text => setPassword(text)}
             />
             <TextInput
               className="border p-4 rounded-xl my-3"
               style={{borderColor: '#3f3d56'}}
               placeholderTextColor="#6f6f6f"
               placeholder="Username"
+              value={username}
+              onChangeText={text => setUsername(text)}
             />
           </View>
           <View className="flex flex-col mt-auto">
@@ -67,6 +105,7 @@ const Register = ({navigation}) => {
             </View>
 
             <TouchableOpacity
+              onPress={CreateAccount}
               activeOpacity={0.8}
               className=" rounded-xl h-16 mx-7 mb-7"
               style={{backgroundColor: '#3F3D56'}}>
@@ -75,6 +114,39 @@ const Register = ({navigation}) => {
               </Text>
             </TouchableOpacity>
           </View>
+          {error == false ? (
+            <></>
+          ) : (
+            <View className="w-5/6 border border-red-600 p-4 mx-auto rounded bg-red-100 flex flex-row">
+              <Icon
+                style={{textAlign: 'center'}}
+                name="close-circle"
+                color="#D70032"
+                size={25}
+              />
+              {errorMsg == 'Empty' ? (
+                <Text className="text-red-600 my-auto mx-auto">
+                  One/Two Field Is Empty
+                </Text>
+              ) : (
+                <></>
+              )}
+              {errorMsg == 'auth/email-already-in-use' ? (
+                <Text className="text-red-600 my-auto mx-auto">
+                  Empty Already Exists!
+                </Text>
+              ) : (
+                <></>
+              )}
+              {errorMsg == 'auth/weak-password' ? (
+                <Text className="text-red-600 my-auto mx-auto">
+                  Password Must Be Atleast 8 characters Long
+                </Text>
+              ) : (
+                <></>
+              )}
+            </View>
+          )}
         </ScrollView>
       </TouchableWithoutFeedback>
     </KeyboardAvoidingView>
