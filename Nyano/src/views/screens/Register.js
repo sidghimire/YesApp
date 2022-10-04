@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {createUserWithEmailAndPassword, getAuth} from 'firebase/auth';
+import {createUserWithEmailAndPassword, getAuth,updateProfile} from 'firebase/auth';
 
 const auth = getAuth();
 
@@ -29,10 +29,11 @@ const Register = ({navigation}) => {
           setEmail('');
           setPassword('');
           setUsername('');
-          navigation.navigate("")
+          updateProfile(auth.currentUser,{
+            displayName:username
+          })
         })
         .catch(error => {
-          console.log(error)
           setError(true);
           setErrorMsg(error.code);
           setEmail('');

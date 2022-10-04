@@ -1,12 +1,12 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-const IntroScreen = () => {
+const RestroMenu = () => {
   return (
     <View>
-      <Text>IntroScreen</Text>
+      <Text>RestroMenu</Text>
     </View>
   )
 }
 
-export default IntroScreen
+export default RestroMenu

@@ -11,45 +11,38 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
-import {createUserWithEmailAndPassword, getAuth} from 'firebase/auth';
+import {getAuth, signInWithEmailAndPassword} from 'firebase/auth';
 
 const auth = getAuth();
 
-const Register = ({navigation}) => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [username, setUsername] = useState('');
+const Signin = ({navigation}) => {
   const [error, setError] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
-
-  const CreateAccount = ({navigation}) => {
-    if (email != '' && password != '' && username != '') {
-      createUserWithEmailAndPassword(auth, email, password)
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const loginAccount = () => {
+    if (email != '' && password != '') {
+      signInWithEmailAndPassword(auth, email, password)
         .then(user => {
           setEmail('');
           setPassword('');
-          setUsername('');
-          navigation.navigate("")
         })
         .catch(error => {
-          console.log(error)
           setError(true);
           setErrorMsg(error.code);
           setEmail('');
           setPassword('');
-          setUsername('');
         });
     } else {
       setError(true);
       setErrorMsg('Empty');
       setEmail('');
       setPassword('');
-      setUsername('');
     }
   };
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === 'ios' ? 'height' : 'height'}
       className="flex-1">
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView className="h-full">
@@ -59,13 +52,13 @@ const Register = ({navigation}) => {
             onPress={() => navigation.goBack()}>
             <Icon name="chevron-back-outline" size={40} color="#3f3d56" />
           </TouchableOpacity>
-          <View>
-            <Text className="text-5xl tracking-widest text-gray-700 text-left font-extrabold mx-7 mt-10 mb-5">
-              Let's get you in
+          <View className="my-10">
+            <Text className="text-5xl tracking-widest text-gray-700 text-left font-extrabold mx-7 mt-10">
+              Let's sign you in.
             </Text>
-            <Text className="text-gray-600 text-3xl mx-7 tracking-widest text-left font-lighter mt-8 mb-8">
-              New here?{'\n'}
-              Jump right in!
+            <Text className="text-gray-600 text-3xl mx-7 tracking-widest text-left font-lighter mt-8">
+              Welcome Back.{'\n'}
+              You've been missed!
             </Text>
           </View>
           <View className="m-7 mt-0">
@@ -85,33 +78,25 @@ const Register = ({navigation}) => {
               value={password}
               onChangeText={text => setPassword(text)}
             />
-            <TextInput
-              className="border p-4 rounded-xl my-3"
-              style={{borderColor: '#3f3d56'}}
-              placeholderTextColor="#6f6f6f"
-              placeholder="Username"
-              value={username}
-              onChangeText={text => setUsername(text)}
-            />
           </View>
-          <View className="flex flex-col mt-auto">
+          <View className="flex flex-col mt-20">
             <View className="flex flex-row mx-auto pb-5">
-              <Text className="mx-2">Already Have An Account? </Text>
+              <Text className="mx-2">Don't have an account? </Text>
               <TouchableOpacity
                 className="mx-2"
                 activeOpacity={0.8}
-                onPress={() => navigation.navigate('Signin')}>
-                <Text className="tracking-widest font-medium">Sign in</Text>
+                onPress={() => navigation.navigate('Register')}>
+                <Text className="tracking-widest font-medium">Register</Text>
               </TouchableOpacity>
             </View>
 
             <TouchableOpacity
-              onPress={CreateAccount}
+              onPress={loginAccount}
               activeOpacity={0.8}
               className=" rounded-xl h-16 mx-7 mb-7"
               style={{backgroundColor: '#3F3D56'}}>
               <Text className="mx-auto my-auto text-white font-light tracking-widest">
-                Register
+                Sign In
               </Text>
             </TouchableOpacity>
           </View>
@@ -132,16 +117,16 @@ const Register = ({navigation}) => {
               ) : (
                 <></>
               )}
-              {errorMsg == 'auth/email-already-in-use' ? (
+              {errorMsg == 'auth/wrong-password' ? (
                 <Text className="text-red-600 my-auto mx-auto">
-                  Empty Already Exists!
+                  Wrong Password! Try Again
                 </Text>
               ) : (
                 <></>
               )}
-              {errorMsg == 'auth/weak-password' ? (
+              {errorMsg == 'auth/invalid-email' ? (
                 <Text className="text-red-600 my-auto mx-auto">
-                  Password Must Be Atleast 8 characters Long
+                  Account with that email doesn't exist
                 </Text>
               ) : (
                 <></>
@@ -153,4 +138,4 @@ const Register = ({navigation}) => {
     </KeyboardAvoidingView>
   );
 };
-export default Register;
+export default Signin;
