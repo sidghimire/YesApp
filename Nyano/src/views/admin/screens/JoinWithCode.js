@@ -8,7 +8,7 @@ import {
   where,
   query,
   getDocs,
-  setDoc,
+  setDoc
 } from 'firebase/firestore/lite';
 import {getAuth} from 'firebase/auth';
 
