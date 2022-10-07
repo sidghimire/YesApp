@@ -39,7 +39,8 @@ const JoinWithCode = ({navigation}) => {
           email:email,
           address:address,
           name:name,
-          phone:phone
+          phone:phone,
+          enable:'true'
         });
       });
 

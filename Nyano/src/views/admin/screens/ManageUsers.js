@@ -7,7 +7,9 @@ import {
   getDocs,
   getFirestore,
   query,
+  updateDoc,
   where,
+  doc
 } from 'firebase/firestore/lite';
 import {getAuth} from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -18,7 +20,7 @@ const auth = getAuth();
 
 const ManageUsers = ({navigation}) => {
   const [admin, setAdmin] = useState();
-  const [requestUsers, setRequestUsers] = useState();
+  const [requestUsers, setRequestUsers] = useState([]);
   const getAdminData = async () => {
     const companyCode = await AsyncStorage.getItem('companyCode');
     const ref = collection(db, 'userProfile');
@@ -33,15 +35,35 @@ const ManageUsers = ({navigation}) => {
     });
   };
 
+  const makeEmployee = async(applicant, jobId) => {
+    const companyCode=await AsyncStorage.getItem('companyCode')
+    const ref=doc(db,'userProfile',applicant)
+    await updateDoc(ref,{
+      companyCode: companyCode,
+      post:'employee'
+    })
+    deleteRecord(applicant,jobId)
+  };
+  const deleteRecord = async(applicant, jobId) => {
+    const ref=doc(db,'applyJob',jobId)
+    await updateDoc(ref,{
+      enable:'false'
+    })
+  };
+
   const getJoinRequests = async () => {
     const companyCode = await AsyncStorage.getItem('companyCode');
 
     const ref = collection(db, 'applyJob');
-    const q = query(ref, where('company', '==', companyCode));
+    const q = query(
+      ref,
+      where('company', '==', companyCode),
+      where('enable', '==', 'true'),
+    );
     const snap = await getDocs(q);
     let data = [];
     snap.forEach(async doc => {
-      data.push(doc.data());
+      data.push([doc.id, doc.data()]);
     });
     setRequestUsers(data);
   };
@@ -75,23 +97,34 @@ const ManageUsers = ({navigation}) => {
               <View className="bg-gray-100 rounded-xl p-5 flex flex-row my-3">
                 <View className="flex-1 my-auto">
                   <Text className=" font-light text-black tracking-widest text-base">
-                    {data.name}
+                    {data[1].name}
                   </Text>
                   <View className="flex flex-row">
                     <Text
                       className="font-light text-black"
                       style={{fontSize: 12}}>
-                      {data.phone}
+                      {data[1].phone}
                     </Text>
                     <Text
                       className="font-light text-black ml-2"
                       style={{fontSize: 12}}>
-                      ( {data.address} )
+                      ( {data[1].address} )
                     </Text>
                   </View>
                 </View>
-                <Icon name="checkmark-circle" size={30} color="#0E9956" style={{marginRight:10}}/>
-                <Icon name="close-circle" size={30} color="#CA1929" />
+                <Icon
+                  name="checkmark-circle"
+                  size={30}
+                  color="#0E9956"
+                  style={{marginRight: 10}}
+                  onPress={() => makeEmployee(data[1].applicant, data[0])}
+                />
+                <Icon
+                  name="close-circle"
+                  size={30}
+                  color="#CA1929"
+                  onPress={() => deleteRecord(data[1].applicant, data[0])}
+                />
               </View>
             );
           })}
