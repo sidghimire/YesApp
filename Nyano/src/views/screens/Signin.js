@@ -12,7 +12,7 @@ import {
 import React, {useState} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {getAuth, signInWithEmailAndPassword} from 'firebase/auth';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const auth = getAuth();
 
 const Signin = ({navigation}) => {
@@ -26,6 +26,7 @@ const Signin = ({navigation}) => {
         .then(user => {
           setEmail('');
           setPassword('');
+          console.log(user)
         })
         .catch(error => {
           setError(true);

@@ -6,23 +6,30 @@ import Welcome from '../views/screens/Welcome';
 import AdminSideNavigator from '../routes/AdminSideNavigator';
 import GetProfileStack from './GetProfileStack';
 import {Context} from '../components/Context';
+import GetPersonalInfo from '../views/admin/screens/GetPersonalInfo';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
+const Stack = createNativeStackNavigator();
 const db = getFirestore();
 const auth = getAuth();
-const StatusChecker = () => {
+const StatusChecker = ({navigation}) => {
   const [initializing, setInitializing] = useState(-1);
   const checkIfExists = async () => {
     const ref = doc(db, 'userProfile', auth.currentUser.uid);
     const snapshot = await getDoc(ref);
     if (snapshot.exists()) {
       const data = snapshot.data();
-      if ('companyCode' in data) {
-        setInitializing(1);
+      if ('name' in data) {
+        if ('companyCode' in data) {
+          setInitializing(1);
+        } else {
+          setInitializing(0);
+        }
       } else {
-        setInitializing(0);
+        setInitializing(2);
       }
     } else {
-      setInitializing(0);
+      setInitializing(2);
     }
   };
   useEffect(() => {
@@ -41,6 +48,13 @@ const StatusChecker = () => {
   }
   if (initializing == 1) {
     return <AdminSideNavigator />;
+  }
+  if (initializing == 2) {
+    return (
+      <Stack.Navigator screenOptions={{headerShown:false}}>
+        <Stack.Screen name="GetPersonalIfo" component={GetPersonalInfo} />
+      </Stack.Navigator>
+    );
   }
 };
 

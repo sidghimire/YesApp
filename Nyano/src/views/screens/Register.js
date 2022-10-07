@@ -12,7 +12,7 @@ import {
 import React, {useState} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {createUserWithEmailAndPassword, getAuth,updateProfile} from 'firebase/auth';
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const auth = getAuth();
 
 const Register = ({navigation}) => {
@@ -25,13 +25,16 @@ const Register = ({navigation}) => {
   const CreateAccount = ({navigation}) => {
     if (email != '' && password != '' && username != '') {
       createUserWithEmailAndPassword(auth, email, password)
-        .then(user => {
+        .then(async(user) => {
           setEmail('');
           setPassword('');
           setUsername('');
           updateProfile(auth.currentUser,{
             displayName:username
           })
+          await AsyncStorage.setItem('userUid',user.user.uid)
+          await AsyncStorage.setItem('displayName',username)
+          await AsyncStorage.setItem('email',user.user.email)
         })
         .catch(error => {
           setError(true);
@@ -90,7 +93,7 @@ const Register = ({navigation}) => {
               className="border p-4 rounded-xl my-3"
               style={{borderColor: '#3f3d56'}}
               placeholderTextColor="#6f6f6f"
-              placeholder="Username"
+              placeholder="Full Name"
               value={username}
               onChangeText={text => setUsername(text)}
             />

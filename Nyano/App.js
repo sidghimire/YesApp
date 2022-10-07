@@ -9,9 +9,9 @@ import WelcomeRouter from './src/routes/WelcomeRouter';
 import StatusChecker from './src/routes/StatusChecker';
 import {getAuth, onAuthStateChanged} from 'firebase/auth';
 import {NavigationContainer} from '@react-navigation/native';
-
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 const auth = getAuth();
-
+const Stack = createNativeStackNavigator();
 const App = () => {
   //auth.signOut()
   LogBox.ignoreAllLogs();
@@ -29,7 +29,9 @@ const App = () => {
   if (initializing == 1) {
     return (
       <NavigationContainer>
-        <StatusChecker />
+        <Stack.Navigator screenOptions={{headerShown:false}}>
+          <Stack.Screen name="StatusChecker" component={StatusChecker} />
+        </Stack.Navigator>
       </NavigationContainer>
     );
   }

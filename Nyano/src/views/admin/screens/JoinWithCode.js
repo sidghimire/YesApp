@@ -11,6 +11,7 @@ import {
   setDoc
 } from 'firebase/firestore/lite';
 import {getAuth} from 'firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const auth = getAuth();
 const db = getFirestore();
@@ -24,12 +25,21 @@ const JoinWithCode = ({navigation}) => {
     const querySnapshot = await getDocs(q);
     if (querySnapshot.size > 0) {
       querySnapshot.forEach(async doc => {
+        const name=await AsyncStorage.getItem('displayName')
+        const email=await AsyncStorage.getItem('email')
+        const address=await AsyncStorage.getItem('address')
+        const phone=await AsyncStorage.getItem('phone')
+
         const companyData = doc.data();
         const companyCode = companyData.code;
         const applyRef = collection(db, 'applyJob');
         const snap = await addDoc(applyRef, {
           company: companyCode,
           applicant: auth.currentUser.uid,
+          email:email,
+          address:address,
+          name:name,
+          phone:phone
         });
       });
 

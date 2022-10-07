@@ -7,9 +7,11 @@ import {
   setDoc,
   addDoc,
   collection,
+  updateDoc,
 } from 'firebase/firestore/lite';
 import {getAuth} from 'firebase/auth';
 import { Context } from '../../../components/Context';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const db = getFirestore();
 const auth = getAuth();
@@ -25,9 +27,9 @@ const GetNewCompanyInfo1 = ({navigation}) => {
   const uploadCompanyProfile = async () => {
     const rand = Math.random().toString(16).substr(2, 8);
     const userRef = doc(db, 'userProfile', auth.currentUser.uid);
-    await setDoc(userRef, {
-      phoneNumber: phoneNumber,
+    await updateDoc(userRef, {
       companyCode: rand,
+      post:'admin'
     });
 
     const companyRef = collection(db, 'companyProfile');
@@ -37,8 +39,13 @@ const GetNewCompanyInfo1 = ({navigation}) => {
       ownerName: ownerName,
       address: address,
       admin: auth.currentUser.uid,
+      phoneNumber: phoneNumber,
       code:rand
     });
+
+    await AsyncStorage.setItem("companyCode",rand)
+    await AsyncStorage.setItem("post","admin")
+
     setInitializing(1)
   };
 
