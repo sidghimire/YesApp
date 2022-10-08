@@ -28,16 +28,17 @@ const AddRoom = ({navigation}) => {
       const ref2 = collection(db, 'companyProfile');
       const q2 = query(ref2, where('admin', '==', auth.currentUser.uid));
       const receivedData2 = await getDocs(q2);
-      receivedData2.forEach(doc => {
+      receivedData2.forEach(async(doc) => {
         setCompanyId(doc.id);
+        const snapshot = await addDoc(ref, {
+          admin: auth.currentUser.uid,
+          roomNumber: roomNumber,
+          type: type,
+          price: price,
+          companyId: doc.id,
+        });
       });
-      const snapshot = await addDoc(ref, {
-        admin: auth.currentUser.uid,
-        roomNumber: roomNumber,
-        type: type,
-        price: price,
-        companyId: companyId,
-      });
+     
       navigation.goBack()
     }
   };

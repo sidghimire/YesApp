@@ -3,18 +3,16 @@ import React from 'react';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import {NavigationContainer} from '@react-navigation/native';
 import AdminDashboard from '../views/admin/screens/AdminDashboard';
-import RestroMenu from '../views/admin/screens/RestroMenu';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Ionicons';
-import CompanyName from '../components/CompanyName';
-import Rooms from '../views/admin/screens/Rooms';
-import Restaurant from '../views/admin/screens/Restaurant';
-import RestaurantStack from './RestaurantStack';
-import RoomStack from './RoomStack';
-
+import RestroUserStack from '../views/user/routes/RestroUserStack';
+import {getAuth,signOut} from 'firebase/auth'
+import RoomUserStack from '../views/user/routes/RoomUserStack';
 const Drawer = createDrawerNavigator();
 
-const AdminSideNavigator = () => {
+const auth=getAuth()
+
+const UserSideNavigation = () => {
 
   const CustomSidebar = (props) => {
     return (
@@ -26,49 +24,17 @@ const AdminSideNavigator = () => {
           <Icon name="grid" size={22} color="#3f3d56" />
           <Text className="text-black my-auto text-base ml-7">Dashboard</Text>
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.7} className="flex flex-row my-3" onPress={()=>props.navigation.navigate("RestaurantStack")}>
+        <TouchableOpacity activeOpacity={0.7} className="flex flex-row my-3" onPress={()=>props.navigation.navigate("RestroUserStack")}>
           <Icon name="pizza" size={22} color="#3f3d56" />
           <Text className="text-black my-auto text-base ml-7">Restaurant</Text>
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.7} className="flex flex-row my-3" onPress={()=>props.navigation.navigate("RoomStack")}>
+        <TouchableOpacity activeOpacity={0.7} className="flex flex-row my-3" onPress={()=>props.navigation.navigate("RoomUserStack")}>
           <Icon name="bed" size={22} color="#3f3d56" />
           <Text className="text-black my-auto text-base ml-7">Rooms</Text>
         </TouchableOpacity>
         <TouchableOpacity activeOpacity={0.7} className="flex flex-row my-3">
           <Icon name="fast-food" size={22} color="#3f3d56" />
           <Text className="text-black my-auto text-base ml-7">Kitchen</Text>
-        </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.7} className="flex flex-row my-3">
-          <Icon name="archive" size={22} color="#3f3d56" />
-          <Text className="text-black my-auto text-base ml-7">
-            Stock Management
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.7} className="flex flex-row my-3">
-          <Icon name="color-fill" size={22} color="#3f3d56" />
-          <Text className="text-black my-auto text-base ml-7">
-            Housekeeping
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.7} className="flex flex-row my-3">
-          <Icon name="newspaper" size={22} color="#3f3d56" />
-          <Text className="text-black my-auto text-base ml-7">
-            Finance Report
-          </Text>
-        </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.7} className="flex flex-row my-3">
-          <Icon name="desktop" size={22} color="#3f3d56" />
-          <Text className="text-black my-auto text-base ml-7">Hardware</Text>
-        </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.7} className="flex flex-row my-3">
-          <Icon name="briefcase" size={22} color="#3f3d56" />
-          <Text className="text-black my-auto text-base ml-7">Employees</Text>
-        </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.7} className="flex flex-row my-3">
-          <Icon name="person" size={22} color="#3f3d56" />
-          <Text className="text-black my-auto text-base ml-7">
-            Manage Users
-          </Text>
         </TouchableOpacity>
         <TouchableOpacity activeOpacity={0.7} className="flex flex-row my-3">
           <Icon name="compass" size={22} color="#3f3d56" />
@@ -79,6 +45,7 @@ const AdminSideNavigator = () => {
           <Text className="text-black my-auto text-base ml-7">Setting</Text>
         </TouchableOpacity>
         <TouchableOpacity
+          onPress={()=>auth.signOut()}
           activeOpacity={0.7}
           className="flex flex-row my-8 pt-5 border-t-2 border-t-gray-200">
           <Icon name="log-out-outline" size={22} color="#3f3d56" />
@@ -94,12 +61,10 @@ const AdminSideNavigator = () => {
       initialRouteName="AdminDashboard"
       screenOptions={{headerShown: false}}>
       <Drawer.Screen name="AdminDashboard" component={AdminDashboard} />
-
-      <Drawer.Screen name="RestaurantStack" component={RestaurantStack} />
-      <Drawer.Screen name="RestroMenu" component={RestroMenu} />
-      <Drawer.Screen name="RoomStack" component={RoomStack} />
+      <Drawer.Screen name="RestroUserStack" component={RestroUserStack} />
+      <Drawer.Screen name="RoomUserStack" component={RoomUserStack} />
     </Drawer.Navigator>
   );
 };
 
-export default AdminSideNavigator;
+export default UserSideNavigation;

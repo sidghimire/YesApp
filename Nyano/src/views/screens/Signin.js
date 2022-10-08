@@ -26,7 +26,6 @@ const Signin = ({navigation}) => {
         .then(user => {
           setEmail('');
           setPassword('');
-          console.log(user)
         })
         .catch(error => {
           setError(true);

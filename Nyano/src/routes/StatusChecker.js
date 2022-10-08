@@ -8,6 +8,7 @@ import GetProfileStack from './GetProfileStack';
 import {Context} from '../components/Context';
 import GetPersonalInfo from '../views/admin/screens/GetPersonalInfo';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import UserSideNavigation from './UserSideNavigation';
 
 const Stack = createNativeStackNavigator();
 const db = getFirestore();
@@ -21,7 +22,11 @@ const StatusChecker = ({navigation}) => {
       const data = snapshot.data();
       if ('name' in data) {
         if ('companyCode' in data) {
-          setInitializing(1);
+          if (data.post == 'employee') {
+            setInitializing(3);
+          } else if (data.post == 'admin') {
+            setInitializing(1);
+          }
         } else {
           setInitializing(0);
         }
@@ -49,9 +54,12 @@ const StatusChecker = ({navigation}) => {
   if (initializing == 1) {
     return <AdminSideNavigator />;
   }
+  if (initializing == 3) {
+    return <UserSideNavigation />;
+  }
   if (initializing == 2) {
     return (
-      <Stack.Navigator screenOptions={{headerShown:false}}>
+      <Stack.Navigator screenOptions={{headerShown: false}}>
         <Stack.Screen name="GetPersonalIfo" component={GetPersonalInfo} />
       </Stack.Navigator>
     );

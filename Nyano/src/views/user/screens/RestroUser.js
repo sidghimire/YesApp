@@ -10,16 +10,19 @@ import {
   where,
 } from 'firebase/firestore/lite';
 import {getAuth} from 'firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const db = getFirestore();
 const auth = getAuth();
 
-const Restaurant = ({navigation}) => {
+const RestroUser = ({navigation}) => {
   const [companyId, setCompanyId] = useState();
   const [tableData, setTableData] = useState([]);
   const getTableData = async () => {
+    const companyCode=await AsyncStorage.getItem('companyCode')
     const ref2 = collection(db, 'companyProfile');
-    const q2 = query(ref2, where('admin', '==', auth.currentUser.uid));
+    const q2 = query(ref2, where('code', '==', companyCode));
     const receivedData2 = await getDocs(q2);
 
     receivedData2.forEach(async doc => {
@@ -81,7 +84,7 @@ const Restaurant = ({navigation}) => {
       </View>
 
       <TouchableOpacity
-        onPress={() => navigation.navigate('AddTable')}
+        onPress={() => navigation.navigate('AddRoom')}
         activeOpacity={0.7}
         className="absolute bg-white rounded-full bottom-6 right-6">
         <Icon name="add-circle" size={80} color="#fa594e" />
@@ -90,4 +93,4 @@ const Restaurant = ({navigation}) => {
   );
 };
 
-export default Restaurant;
+export default RestroUser;
