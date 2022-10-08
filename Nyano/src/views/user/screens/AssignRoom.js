@@ -3,6 +3,12 @@ import React, {useState} from 'react';
 import ToggleMenu from '../../../components/ToogleMenu';
 import Icon from 'react-native-vector-icons/Ionicons';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import {addDoc, collection, getFirestore} from 'firebase/firestore/lite';
+import {getAuth} from 'firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const db = getFirestore();
+const auth = getAuth();
 
 const AssignRoom = ({route, navigation}) => {
   const {roomNumber, roomId} = route.params;
@@ -17,8 +23,30 @@ const AssignRoom = ({route, navigation}) => {
   const [phone, setPhone] = useState();
   const [citizenship, setCitizenship] = useState();
 
-  const checkInUser = () => {};
-  const reserveRoom = () => {};
+  const checkInUser = async() => {
+    const companyCode = await AsyncStorage.getItem('companyCode');
+    const ref = collection(db, 'bookings', companyCode, 'checkIn');
+    await addDoc(ref, {
+      roomNumber: roomNumber,
+      customerName: name,
+      customerPhone: phone,
+      customerIdentity: citizenship,
+      checkIn: checkIn,
+      checkOut: checkOut,
+    });
+  };
+  const reserveRoom = async () => {
+    const companyCode = await AsyncStorage.getItem('companyCode');
+    const ref = collection(db, 'bookings', companyCode, 'reservation');
+    await addDoc(ref, {
+      roomNumber: roomNumber,
+      customerName: name,
+      customerPhone: phone,
+      customerIdentity: citizenship,
+      checkIn: checkIn,
+      checkOut: checkOut,
+    });
+  };
 
   return (
     <View className="flex-1 bg-white p-5">

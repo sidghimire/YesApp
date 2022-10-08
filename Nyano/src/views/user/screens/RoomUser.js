@@ -17,6 +17,42 @@ const auth = getAuth();
 const RoomUser = ({navigation}) => {
   const [companyId, setCompanyId] = useState();
   const [roomData, setRoomData] = useState([]);
+  const [checkInData, setCheckInData] = useState([]);
+  const [reservationData, setReservationData] = useState([]);
+  const [filledList, setFilledList] = useState([]);
+  const getCheckIn = async () => {
+    const companyCode = await AsyncStorage.getItem('companyCode');
+    const ref2 = collection(db, 'bookings', companyCode, 'checkIn');
+    const receivedData2 = await getDocs(ref2);
+    let data = [];
+    let temp = filledList;
+    receivedData2.forEach(async doc => {
+      data.push([doc.id, doc.data()]);
+    });
+    setCheckInData(data);
+    for (let i = 0; i < data.length; i++) {
+      let val = data[i][1].roomNumber;
+      temp.push(val);
+    }
+    setFilledList(temp);
+  };
+  const getReservation = async () => {
+    const companyCode = await AsyncStorage.getItem('companyCode');
+    const ref2 = collection(db, 'bookings', companyCode, 'reservation');
+    const receivedData2 = await getDocs(ref2);
+    let data = [];
+    let temp = filledList;
+    receivedData2.forEach(async doc => {
+      data.push([doc.id, doc.data()]);
+    });
+    setReservationData(data);
+    for (let i = 0; i < data.length; i++) {
+      let val = data[i][1].roomNumber;
+      temp.push(val);
+    }
+    setFilledList(temp);
+    getRoomData();
+  };
   const getRoomData = async () => {
     const companyCode = await AsyncStorage.getItem('companyCode');
     const ref2 = collection(db, 'companyProfile');
@@ -25,7 +61,7 @@ const RoomUser = ({navigation}) => {
 
     receivedData2.forEach(async doc => {
       const ref = collection(db, 'roomAdminDB');
-      const q = query(ref, where('companyId', '==', doc.id));
+      const q = query(ref,where('roomNumber','not-in',filledList));
       const snapshot = await getDocs(q);
       let data = [];
       snapshot.forEach(doc => {
@@ -36,7 +72,10 @@ const RoomUser = ({navigation}) => {
   };
 
   useEffect(() => {
-    getRoomData();
+    getCheckIn();
+    getReservation();
+
+    
   }, []);
 
   return (
@@ -70,8 +109,29 @@ const RoomUser = ({navigation}) => {
         Room List
       </Text>
       <View className="flex flex-row pl-5" style={{flexWrap: 'wrap'}}>
+        {checkInData.map(data => {
+          return (
+            <TouchableOpacity
+              activeOpacity={0.7}
+              className="bg-green-500 rounded-xl w-16 h-16 m-2">
+              <Text className="mx-auto my-auto text-white">
+                {data[1].roomNumber}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
+        {reservationData.map(data => {
+          return (
+            <TouchableOpacity
+              activeOpacity={0.7}
+              className="bg-yellow-500 rounded-xl w-16 h-16 m-2">
+              <Text className="mx-auto my-auto text-white">
+                {data[1].roomNumber}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
         {roomData.map(data => {
-          console.log(data);
           return (
             <TouchableOpacity
               onPress={() =>
