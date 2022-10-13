@@ -12,7 +12,6 @@ import {
 import {getAuth} from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
 const db = getFirestore();
 const auth = getAuth();
 
@@ -20,7 +19,7 @@ const RestroUser = ({navigation}) => {
   const [companyId, setCompanyId] = useState();
   const [tableData, setTableData] = useState([]);
   const getTableData = async () => {
-    const companyCode=await AsyncStorage.getItem('companyCode')
+    const companyCode = await AsyncStorage.getItem('companyCode');
     const ref2 = collection(db, 'companyProfile');
     const q2 = query(ref2, where('code', '==', companyCode));
     const receivedData2 = await getDocs(q2);
@@ -75,6 +74,7 @@ const RestroUser = ({navigation}) => {
         {tableData.map(data => {
           return (
             <TouchableOpacity
+              onPress={()=>{navigation.navigate('MakeOrder',{tableNumber:data[1].tableNumber})}}
               activeOpacity={0.7}
               className="border border-gray-300 rounded-xl w-16 h-16 m-2">
               <Text className="mx-auto my-auto">{data[1].tableNumber}</Text>
@@ -82,13 +82,6 @@ const RestroUser = ({navigation}) => {
           );
         })}
       </View>
-
-      <TouchableOpacity
-        onPress={() => navigation.navigate('AddRoom')}
-        activeOpacity={0.7}
-        className="absolute bg-white rounded-full bottom-6 right-6">
-        <Icon name="add-circle" size={80} color="#fa594e" />
-      </TouchableOpacity>
     </View>
   );
 };

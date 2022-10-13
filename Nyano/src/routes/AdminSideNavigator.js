@@ -12,6 +12,7 @@ import Restaurant from '../views/admin/screens/Restaurant';
 import RestaurantStack from './RestaurantStack';
 import RoomStack from './RoomStack';
 import ManageUserStack from './ManageUserStack';
+import MenuUserStack from './MenuUserStack';
 import {signOut, getAuth} from 'firebase/auth';
 
 const auth = getAuth();
@@ -55,6 +56,13 @@ const AdminSideNavigator = () => {
             Stock Management
           </Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          className="flex flex-row my-3"
+          onPress={() => props.navigation.navigate('MenuUserStack')}>
+          <Icon name="grid" size={22} color="#3f3d56" />
+          <Text className="text-black my-auto text-base ml-7">Menu</Text>
+        </TouchableOpacity>
         <TouchableOpacity activeOpacity={0.7} className="flex flex-row my-3">
           <Icon name="color-fill" size={22} color="#3f3d56" />
           <Text className="text-black my-auto text-base ml-7">
@@ -95,7 +103,7 @@ const AdminSideNavigator = () => {
         <TouchableOpacity
           onPress={() => auth.signOut()}
           activeOpacity={0.7}
-          className="flex flex-row my-8 pt-5 border-t-2 border-t-gray-200">
+          className="flex flex-row my-4 pt-5 border-t-2 border-t-gray-200">
           <Icon name="log-out-outline" size={22} color="#3f3d56" />
           <Text className="text-black my-auto text-base ml-7">Logout</Text>
         </TouchableOpacity>
@@ -114,6 +122,7 @@ const AdminSideNavigator = () => {
       <Drawer.Screen name="RestroMenu" component={RestroMenu} />
       <Drawer.Screen name="RoomStack" component={RoomStack} />
       <Drawer.Screen name="ManageUserStack" component={ManageUserStack} />
+      <Drawer.Screen name="MenuUserStack" component={MenuUserStack} />
     </Drawer.Navigator>
   );
 };
