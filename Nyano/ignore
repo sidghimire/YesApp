@@ -1,0 +1,24 @@
+ const [companyCode, setCompanyCode] = useState();
+  const [foodList, setFoodList] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(true);
+  const getMenuData = async () => {
+    const ref = collection(db, 'hotelMenu', 'foodList', companyCode);
+    const snapshot = await getDocs(ref);
+    const foodArray = [];
+    snapshot.forEach(datas => {
+      const data = datas.data();
+      foodArray.push(data);
+    });
+    setFoodList(foodArray);
+    setRefreshing(false);
+  };
+  const getCompanyCode = async () => {
+    const companyCode = await AsyncStorage.getItem('companyCode');
+    setCompanyCode(companyCode);
+  };
+
+  useEffect(() => {
+    getCompanyCode();
+    getMenuData();
+  }, []);
