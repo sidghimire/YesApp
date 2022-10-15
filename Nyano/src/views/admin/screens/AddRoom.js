@@ -11,6 +11,7 @@ import {
   getDocs,
 } from 'firebase/firestore/lite';
 import {getAuth} from 'firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const db = getFirestore();
 const auth = getAuth();
@@ -23,23 +24,18 @@ const AddRoom = ({navigation}) => {
 
   const uploadValue = async () => {
     if (roomNumber != '' && type != '' && price != '') {
-      const ref = collection(db, 'roomAdminDB');
+      const companyCode = await AsyncStorage.getItem('companyCode');
+      const ref = collection(db, 'roomAdminDB', companyCode, 'hotelRoom');
 
-      const ref2 = collection(db, 'companyProfile');
-      const q2 = query(ref2, where('admin', '==', auth.currentUser.uid));
-      const receivedData2 = await getDocs(q2);
-      receivedData2.forEach(async(doc) => {
-        setCompanyId(doc.id);
-        const snapshot = await addDoc(ref, {
-          admin: auth.currentUser.uid,
-          roomNumber: roomNumber,
-          type: type,
-          price: price,
-          companyId: doc.id,
-        });
+      const snapshot = await addDoc(ref, {
+        admin: auth.currentUser.uid,
+        roomNumber: roomNumber,
+        type: type,
+        price: price,
+        companyId: companyCode,
       });
-     
-      navigation.goBack()
+
+      navigation.goBack();
     }
   };
 
@@ -82,6 +78,7 @@ const AddRoom = ({navigation}) => {
       </View>
       <View className="flex flex-row mt-16">
         <TouchableOpacity
+          activeOpacity={0.7}
           className="bg-black rounded-full flex-1 p-4"
           onPress={uploadValue}>
           <Text className="text-white text-center tracking-widest">Add</Text>

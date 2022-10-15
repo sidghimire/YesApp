@@ -41,21 +41,21 @@ const AddMenu = ({navigation}) => {
       setCategory(categoryArray);
     }
   };
-  const getCompanyCode=async()=>{
-    const code=await AsyncStorage.getItem('companyCode')
-    setCompanyCode(code)
-  }
-  const uploadValue = async() => {
-    if(type!="" && foodName!="" && price!=""){
-      const ref=collection(db, "hotelMenu",'foodList',companyCode)
-      
-      await addDoc(ref,{
+  const getCompanyCode = async () => {
+    const code = await AsyncStorage.getItem('companyCode');
+    setCompanyCode(code);
+  };
+  const uploadValue = async () => {
+    if (type != '' && foodName != '' && price != '') {
+      const ref = collection(db, 'hotelMenu', 'foodList', companyCode);
+
+      await addDoc(ref, {
         foodName: foodName,
         price: price,
         category: type,
-      })
+      });
     }
-    navigation.goBack()
+    navigation.goBack();
   };
 
   useEffect(() => {
@@ -64,7 +64,13 @@ const AddMenu = ({navigation}) => {
   }, []);
 
   if (category.length == 0) {
-    return <LoadingIcon />;
+    return (
+      <View className="bg-white flex-1">
+        <View className="my-auto">
+          <LoadingIcon />
+        </View>
+      </View>
+    );
   } else {
     return (
       <View className="flex-1 bg-white p-5">
@@ -98,26 +104,27 @@ const AddMenu = ({navigation}) => {
             </Picker>
           </View>
         </View>
-        
+
         <View className="flex flex-col">
-            <TextInput
-              className=" border border-gray-400 mt-5 rounded-xl p-3 pl-5"
-              placeholder="Food Name: "
-              value={foodName}
-              onChangeText={text => setFoodName(text)}
-            />
+          <TextInput
+            className=" border border-gray-400 mt-5 rounded-xl p-3 pl-5"
+            placeholder="Food Name: "
+            value={foodName}
+            onChangeText={text => setFoodName(text)}
+          />
         </View>
         <View className="flex flex-col">
-            <TextInput
-              keyboardType="numeric"
-              className=" border border-gray-400 mt-5 rounded-xl p-3 pl-5"
-              placeholder="Price: "
-              value={price}
-              onChangeText={text => setPrice(text)}
-            />
+          <TextInput
+            keyboardType="numeric"
+            className=" border border-gray-400 mt-5 rounded-xl p-3 pl-5"
+            placeholder="Price: "
+            value={price}
+            onChangeText={text => setPrice(text)}
+          />
         </View>
         <View className="flex flex-row mt-16">
           <TouchableOpacity
+            activeOpacity={0.7}
             className="bg-black rounded-full flex-1 p-4"
             onPress={uploadValue}>
             <Text className="text-white text-center tracking-widest">Add</Text>

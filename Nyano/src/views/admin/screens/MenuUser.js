@@ -20,6 +20,7 @@ const MenuUser = ({navigation}) => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(true);
   const getMenuData = async () => {
+    setRefreshing(true);
     const companyCode = await AsyncStorage.getItem('companyCode');
     const ref = collection(db, 'hotelMenu', 'foodList', companyCode);
     const snapshot = await getDocs(ref);
@@ -30,6 +31,7 @@ const MenuUser = ({navigation}) => {
       foodArray.push(data);
     });
     setFoodList(foodArray);
+    setRefreshing(false);
   };
 
   useEffect(() => {
@@ -44,20 +46,21 @@ const MenuUser = ({navigation}) => {
           Menu
         </Text>
       </View>
+
+      <View className="flex flex-row bg-gray-100 mt-5 rounded-xl p-1 pl-5 mb-5">
+        <Icon
+          name="search-outline"
+          size={20}
+          color="#bfbfbf"
+          style={{marginTop: 'auto', marginBottom: 'auto', marginRight: 10}}
+        />
+        <TextInput className="  " placeholder="Search for a product: " />
+      </View>
       <ScrollView
         className="flex-1 bg-white"
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={getMenuData} />
         }>
-        <View className="flex flex-row bg-gray-100 mt-5 rounded-xl p-1 pl-5 mb-5">
-          <Icon
-            name="search-outline"
-            size={20}
-            color="#bfbfbf"
-            style={{marginTop: 'auto', marginBottom: 'auto', marginRight: 10}}
-          />
-          <TextInput className="  " placeholder="Search for a product: " />
-        </View>
         <View className="flex flex-row" style={{flexWrap: 'wrap'}}>
           <View
             className="mx-auto flex flex-row w-full"
@@ -71,10 +74,13 @@ const MenuUser = ({navigation}) => {
                     <Text className="text-base font-medium">
                       {data.foodName}
                     </Text>
-                    <Text className="font-light my-auto text-sm">{(data.category).charAt(0).toUpperCase() + (data.category).slice(1)}</Text>
+                    <Text className="font-light my-auto text-sm">
+                      {data.category.charAt(0).toUpperCase() +
+                        data.category.slice(1)}
+                    </Text>
 
                     <View className="flex flex-row mt-auto">
-                      <Text className="font-light my-auto text-base">$</Text>
+                      <Text className="font-light my-auto text-base">Rs.</Text>
                       <Text className="text-base font-light my-auto ml-2">
                         {data.price}
                       </Text>

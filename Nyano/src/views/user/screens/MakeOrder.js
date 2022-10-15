@@ -12,6 +12,8 @@ import {
   collection,
   query,
   where,
+  addDoc,
+  
 } from 'firebase/firestore/lite';
 import {ScrollView} from 'react-native-gesture-handler';
 const db = getFirestore();
@@ -26,13 +28,13 @@ const OrderRow = props => {
           <Text className="text-sm text-center">{index + 1}</Text>
         </View>
         <View className="w-2/6 py-1 border-0 ">
-          <Text className="text-sm text-center">{data[0]}</Text>
+          <Text className="text-sm text-center">{data.foodName}</Text>
         </View>
         <View className="w-1/6 py-1 ">
-          <Text className="text-sm text-center">{data[1]}</Text>
+          <Text className="text-sm text-center">{data.quantity}</Text>
         </View>
         <View className="w-2/6 py-1">
-          <Text className="text-sm text-center">{data[2]}</Text>
+          <Text className="text-sm text-center">{data.basicPrice}</Text>
         </View>
       </View>
     </View>
@@ -46,9 +48,10 @@ const MakeOrder = ({route, navigation}, props) => {
   const [quantity, setQuantity] = useState('1');
   const [price, setPrice] = useState('');
   const [orderList, setOrderList] = useState([]);
-
+  const [total,setTotal]=useState("0")
   const [refreshing, setRefreshing] = useState(true);
   const [checkExists, setCheckExists] = useState();
+  const [reset,setReset]=useState(false)
   const getMenuData = async () => {
     const companyCode = await AsyncStorage.getItem('companyCode');
 
@@ -86,15 +89,37 @@ const MakeOrder = ({route, navigation}, props) => {
     if (basicPrice == '' || basicPrice == 0) {
     } else {
       const li = orderList;
-      const data = [foodName, quantity, basicPrice];
-
+      const data = {foodName, quantity, basicPrice};
+      let val=parseFloat(quantity)*parseFloat(basicPrice)
+      setTotal(parseFloat(total)+val)
       setOrderList([...orderList, data]);
     }
+    setFoodName('')
+    setPrice('')
+    setQuantity('')
+    setCheckExists(false)
+    setReset(!reset)
+ 
   };
   useEffect(() => {
     getMenuData();
   }, []);
   useEffect(() => {}, [orderList]);
+
+
+
+const sendToKitchen=async()=>{
+  const date=new Date()
+  const companyCode=await AsyncStorage.getItem('companyCode')
+  const ref=collection(db,'order','restaurant',companyCode)
+  let data=JSON.stringify(orderList)
+  await addDoc(ref,{data,tableNumber,date})
+  navigation.goBack()
+
+}
+
+
+
   return (
     <View className="flex-1 bg-white p-5">
       <View className="flex flex-row">
@@ -121,6 +146,7 @@ const MakeOrder = ({route, navigation}, props) => {
           data={foodList}
           updateFoodName={updateFoodName}
           checkExists={checkExistsFunction}
+          reset={reset}
         />
         <TextInput
           className=" border border-gray-400 rounded-xl p-3 pl-5 text-black mt-3"
@@ -152,7 +178,8 @@ const MakeOrder = ({route, navigation}, props) => {
             style={{marginLeft: 'auto', marginRight: 'auto'}}
           />
         </TouchableOpacity>
-        <View className="flex flex-col mt-10 border border-gray-100">
+        <Text className="text-black font-light text-xl mx-2">Bill</Text>
+        <View className="flex flex-col mt-3 border border-gray-100">
           <View className="flex flex-row border border-gray-200">
             <View className="flex flex-row">
               <View className="w-1/6 bg-gray-100">
@@ -178,16 +205,30 @@ const MakeOrder = ({route, navigation}, props) => {
               })}
             </ScrollView>
           )}
+          <View className="flex flex-row border border-gray-200">
+            <View className="flex flex-row">
+              <View className="w-1/6 ">
+              </View>
+              <View className="w-2/6">
+              </View>
+              <View className="w-1/6">
+                <Text className="text-base text-right">Total</Text>
+              </View>
+              <View className="w-2/6 bg">
+                <Text className="text-base text-center">{total}</Text>
+              </View>
+            </View>
+          </View>
         </View>
-        <View className="flex flex-row mt-10">
-          <TouchableOpacity className="flex-1 p-4 mr-2 rounded-xl bg-green-700">
+        <View className="flex flex-row mt-5">
+          <TouchableOpacity onPress={sendToKitchen} className="flex-1 p-4 mr-2 rounded-xl bg-green-700">
             <Text className="mx-auto my-auto text-white font-light">
               Send To Kitchen
             </Text>
           </TouchableOpacity>
           <TouchableOpacity className="flex-1 p-4 ml-2 rounded-xl border border-green-700">
             <Text className="mx-auto my-auto text-green-700 font-light">
-              Reserve
+              Edit
             </Text>
           </TouchableOpacity>
         </View>

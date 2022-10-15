@@ -22,7 +22,7 @@ const App = () => {
       setInitializing(0);
     }
   });
-  const [initializing, setInitializing] = useState(0);
+  const [initializing, setInitializing] = useState(-1);
   if (initializing == -1) {
     return <Welcome />;
   }

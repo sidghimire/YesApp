@@ -10,30 +10,24 @@ import {
   getDocs,
 } from 'firebase/firestore/lite';
 import {getAuth} from 'firebase/auth';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const db = getFirestore();
 const auth = getAuth();
 
 const AddTable = ({navigation}) => {
   const [tableNumber, setTableNumber] = useState();
-  const [companyId, setCompanyId] = useState();
   const addTable = async () => {
     if (tableNumber != '') {
-      const ref = collection(db, 'tableAdminDB');
-
-      const ref2 = collection(db, 'companyProfile');
-      const q2 = query(ref2, where('admin', '==', auth.currentUser.uid));
-      const receivedData2 = await getDocs(q2);
-      receivedData2.forEach(async(doc) => {
-        setCompanyId(doc.id);
+      const companyCode=await AsyncStorage.getItem('companyCode')
+      const ref = collection(db, 'tableAdminDB',companyCode,'hotelTable');
         const snapshot = await addDoc(ref, {
           admin: auth.currentUser.uid,
           tableNumber: tableNumber,
-          companyId: doc.id,
+          companyId: companyCode,
         });
-      });
-      
       navigation.goBack();
+      
     }
   };
   return (

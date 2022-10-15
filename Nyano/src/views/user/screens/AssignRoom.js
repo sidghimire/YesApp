@@ -34,6 +34,7 @@ const AssignRoom = ({route, navigation}) => {
       checkIn: checkIn,
       checkOut: checkOut,
     });
+    navigation.goBack()
   };
   const reserveRoom = async () => {
     const companyCode = await AsyncStorage.getItem('companyCode');
@@ -46,6 +47,7 @@ const AssignRoom = ({route, navigation}) => {
       checkIn: checkIn,
       checkOut: checkOut,
     });
+    navigation.goBack()
   };
 
   return (

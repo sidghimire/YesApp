@@ -53,7 +53,7 @@ const Register = ({navigation}) => {
   };
   return (
     <KeyboardAvoidingView
-      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'paddding'}
       className="flex-1">
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <ScrollView className="h-full">

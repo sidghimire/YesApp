@@ -1,6 +1,11 @@
-import {View, Text, TextInput, TouchableOpacity} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import Icon from 'react-native-vector-icons/Ionicons';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  RefreshControl,
+  ScrollView,
+} from 'react-native';
+import React, {useState, useEffect} from 'react';
 import ToggleMenu from '../../../components/ToogleMenu';
 import {
   getFirestore,
@@ -11,142 +16,105 @@ import {
 } from 'firebase/firestore/lite';
 import {getAuth} from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const db = getFirestore();
 const auth = getAuth();
 
 const RoomUser = ({navigation}) => {
-  const [companyId, setCompanyId] = useState();
-  const [roomData, setRoomData] = useState([]);
-  const [checkInData, setCheckInData] = useState([]);
-  const [reservationData, setReservationData] = useState([]);
-  const [filledList, setFilledList] = useState([]);
-  const getCheckIn = async () => {
-    const companyCode = await AsyncStorage.getItem('companyCode');
-    const ref2 = collection(db, 'bookings', companyCode, 'checkIn');
-    const receivedData2 = await getDocs(ref2);
-    let data = [];
-    let temp = filledList;
-    receivedData2.forEach(async doc => {
-      data.push([doc.id, doc.data()]);
-    });
-    setCheckInData(data);
-    for (let i = 0; i < data.length; i++) {
-      let val = data[i][1].roomNumber;
-      temp.push(val);
-    }
-    setFilledList(temp);
-  };
-  const getReservation = async () => {
-    const companyCode = await AsyncStorage.getItem('companyCode');
-    const ref2 = collection(db, 'bookings', companyCode, 'reservation');
-    const receivedData2 = await getDocs(ref2);
-    let data = [];
-    let temp = filledList;
-    receivedData2.forEach(async doc => {
-      data.push([doc.id, doc.data()]);
-    });
-    setReservationData(data);
-    for (let i = 0; i < data.length; i++) {
-      let val = data[i][1].roomNumber;
-      temp.push(val);
-    }
-    setFilledList(temp);
-    getRoomData();
-  };
-  const getRoomData = async () => {
-    const companyCode = await AsyncStorage.getItem('companyCode');
-    const ref2 = collection(db, 'companyProfile');
-    const q2 = query(ref2, where('code', '==', companyCode));
-    const receivedData2 = await getDocs(q2);
+  const [emptyRoom, setEmptyRoom] = useState([]);
+  const [reserveRoom, setReserveRoom] = useState([]);
+  const [bookedRoom, setBookedRoom] = useState([]);
+  const [occupiedRoom, setOccupiedRoom] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-    receivedData2.forEach(async doc => {
-      const ref = collection(db, 'roomAdminDB');
-      const q = query(ref,where('roomNumber','not-in',filledList));
-      const snapshot = await getDocs(q);
-      let data = [];
-      snapshot.forEach(doc => {
-        data.push([doc.id, doc.data()]);
-      });
-      setRoomData(data);
+  const getReservedRoom = async () => {
+    const companyCode = await AsyncStorage.getItem('companyCode');
+    const ref = collection(db, 'bookings', companyCode, 'reservation');
+    const snapshot = await getDocs(ref);
+    const arr = [];
+    snapshot.forEach(docs => {
+      const doc = docs.data();
+      arr.push(doc.roomNumber);
     });
+    setOccupiedRoom([...occupiedRoom, arr]);
+    setReserveRoom([...reserveRoom, arr]);
+  };
+  const getBookedRoom = async () => {
+    const companyCode = await AsyncStorage.getItem('companyCode');
+    const ref = collection(db, 'bookings', companyCode, 'checkIn');
+    const snapshot = await getDocs(ref);
+    const arr = [];
+    snapshot.forEach(docs => {
+      const doc = docs.data();
+      arr.push(doc.roomNumber);
+    });
+    setBookedRoom([...bookedRoom, arr]);
+    setOccupiedRoom([...occupiedRoom, arr]);
+  };
+  const getEmptyRoom = async () => {
+    const companyCode = await AsyncStorage.getItem('companyCode');
+    const ref = collection(db, 'roomAdminDB', companyCode, 'hotelRoom');
+    let q = ref;
+    if (occupiedRoom.length != 0) {
+      q = query(ref, where('roomNumber', 'not-in', occupiedRoom));
+    }
+    const snapshot = await getDocs(q);
+    const arr = [];
+    snapshot.forEach(docs => {
+      const doc = docs.data();
+      const data = [doc.roomNumber];
+      arr.push(doc.roomNumber);
+    });
+    setEmptyRoom(arr);
+  };
+
+  const loadAllRoom = () => {
+    setBookedRoom([])
+    setReserveRoom([])
+    setOccupiedRoom([])
+    getReservedRoom();
+    getBookedRoom();
+    getEmptyRoom();
   };
 
   useEffect(() => {
-    getCheckIn();
-    getReservation();
-
-    
+    loadAllRoom();
   }, []);
 
   return (
-    <View className="flex-1 bg-white p-5">
+    <View className="bg-white flex-1 p-5">
       <View className="flex flex-row">
         <ToggleMenu navigation={navigation} />
         <Text className="text-black font-extrabold text-3xl my-auto mx-auto">
-          Rooms
+          Room
         </Text>
-      </View>
-      <View className="flex flex-row mt-10">
-        <TextInput
-          className="flex-1 border border-gray-400 rounded-l-xl p-3 pl-5"
-          placeholder="Room Number: "
-        />
-        <TouchableOpacity className="bg-black rounded-r-xl p-3 w-16 ">
-          <Icon
-            name="search"
-            size={20}
-            color="#fff"
-            style={{
-              marginLeft: 'auto',
-              marginRight: 'auto',
-              marginTop: 'auto',
-              marginBottom: 'auto',
-            }}
-          />
-        </TouchableOpacity>
       </View>
       <Text className="text-black font-light text-2xl mt-5 ml-2 mb-2">
         Room List
       </Text>
-      <View className="flex flex-row pl-5" style={{flexWrap: 'wrap'}}>
-        {checkInData.map(data => {
-          return (
-            <TouchableOpacity
-              activeOpacity={0.7}
-              className="bg-green-500 rounded-xl w-16 h-16 m-2">
-              <Text className="mx-auto my-auto text-white">
-                {data[1].roomNumber}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
-        {reservationData.map(data => {
-          return (
-            <TouchableOpacity
-              activeOpacity={0.7}
-              className="bg-yellow-500 rounded-xl w-16 h-16 m-2">
-              <Text className="mx-auto my-auto text-white">
-                {data[1].roomNumber}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
-        {roomData.map(data => {
-          return (
-            <TouchableOpacity
-              onPress={() =>
-                navigation.navigate('AssignRoom', {
-                  roomNumber: data[1].roomNumber,
-                  roomId: data[0],
-                })
-              }
-              activeOpacity={0.7}
-              className="border border-gray-300 rounded-xl w-16 h-16 m-2">
-              <Text className="mx-auto my-auto">{data[1].roomNumber}</Text>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
+      <ScrollView
+      className="flex flex-col"
+        refreshControl={
+          <RefreshControl loading={loading} onRefresh={loadAllRoom} />
+        }>
+        <View className="flex flex-row pl-5" style={{flexWrap: 'wrap'}}>
+          {emptyRoom.map(data => {
+            return (
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('AssignRoom', {
+                    roomNumber: data,
+                  });
+                }}
+                activeOpacity={0.7}
+                className="border border-gray-300 rounded-xl w-16 h-16 m-2">
+                <Text className="mx-auto my-auto">{data}</Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+        
+      </ScrollView>
     </View>
   );
 };

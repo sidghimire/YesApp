@@ -1,4 +1,10 @@
-import {View, Text, TextInput, TouchableOpacity} from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  RefreshControl,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import ToggleMenu from '../../../components/ToogleMenu';
@@ -10,6 +16,8 @@ import {
   where,
 } from 'firebase/firestore/lite';
 import {getAuth} from 'firebase/auth';
+import {ScrollView} from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const db = getFirestore();
 const auth = getAuth();
@@ -17,21 +25,18 @@ const auth = getAuth();
 const Rooms = ({navigation}) => {
   const [companyId, setCompanyId] = useState();
   const [roomData, setRoomData] = useState([]);
+  const [loading, setLoading] = useState(true);
   const getRoomData = async () => {
-    const ref2 = collection(db, 'companyProfile');
-    const q2 = query(ref2, where('admin', '==', auth.currentUser.uid));
-    const receivedData2 = await getDocs(q2);
-
-    receivedData2.forEach(async doc => {
-      const ref = collection(db, 'roomAdminDB');
-      const q = query(ref, where('companyId', '==', doc.id));
-      const snapshot = await getDocs(q);
-      let data = [];
-      snapshot.forEach(doc => {
-        data.push([doc.id, doc.data()]);
-      });
-      setRoomData(data);
+    setLoading(true);
+    const companyCode = await AsyncStorage.getItem('companyCode');
+    const ref2 = collection(db, 'roomAdminDB', companyCode, 'hotelRoom');
+    const snapshot = await getDocs(ref2);
+    let data = [];
+    snapshot.forEach(doc => {
+      data.push([doc.id, doc.data()]);
     });
+    setRoomData(data);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -68,18 +73,22 @@ const Rooms = ({navigation}) => {
       <Text className="text-black font-light text-2xl mt-5 ml-2 mb-2">
         Room List
       </Text>
-      <View className="flex flex-row pl-5" style={{flexWrap: 'wrap'}}>
-        {roomData.map(data => {
-          return (
-            <TouchableOpacity
-              activeOpacity={0.7}
-              className="border border-gray-300 rounded-xl w-16 h-16 m-2">
-              <Text className="mx-auto my-auto">{data[1].roomNumber}</Text>
-            </TouchableOpacity>
-          );
-        })}
-      </View>
-
+      <ScrollView
+        refreshControl={
+          <RefreshControl refreshing={loading} onRefresh={getRoomData} />
+        }>
+        <View className="flex flex-row pl-5" style={{flexWrap: 'wrap'}}>
+          {roomData.map(data => {
+            return (
+              <TouchableOpacity
+                activeOpacity={0.7}
+                className="border border-gray-300 rounded-xl w-16 h-16 m-2">
+                <Text className="mx-auto my-auto">{data[1].roomNumber}</Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      </ScrollView>
       <TouchableOpacity
         onPress={() => navigation.navigate('AddRoom')}
         activeOpacity={0.7}

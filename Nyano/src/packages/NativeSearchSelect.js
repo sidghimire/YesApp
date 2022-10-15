@@ -4,7 +4,7 @@ import {ScrollView, TextInput} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Ionicons';
 
 const NativeSearchSelect = props => {
-  const {placeholder, data, updateFoodName, checkExists} = props;
+  const {placeholder, data, updateFoodName, checkExists, reset} = props;
   const [searchText, setSearchText] = useState('');
   const [available, setAvailable] = useState();
   const [exist, setExist] = useState();
@@ -34,11 +34,18 @@ const NativeSearchSelect = props => {
     setSearchText(text);
     getList(text, data);
   };
+  const changeReset = () => {
+      setSearchText('');
+  
+  };
 
   useEffect(() => {
     updateFoodName(searchText);
     checkExists(exist);
   }, [searchText, checkExists]);
+  useEffect(() => {
+    changeReset();
+  }, [reset]);
 
   return (
     <View>

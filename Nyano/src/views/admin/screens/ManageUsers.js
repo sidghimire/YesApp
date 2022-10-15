@@ -21,8 +21,10 @@ const auth = getAuth();
 const ManageUsers = ({navigation}) => {
   const [admin, setAdmin] = useState();
   const [requestUsers, setRequestUsers] = useState([]);
+  const [companyCode,setCompanyCode]=useState()
   const getAdminData = async () => {
     const companyCode = await AsyncStorage.getItem('companyCode');
+    setCompanyCode(companyCode)
     const ref = collection(db, 'userProfile');
     const q = query(
       ref,
@@ -80,6 +82,12 @@ const ManageUsers = ({navigation}) => {
         <Text className="text-black font-extrabold text-3xl my-auto mx-auto">
           Manage Users
         </Text>
+      </View>
+      <View className="flex flex-col mt-10">
+        <Text className="text-black font-light text-2xl mb-2">CompanyCode:</Text>
+        <View className="bg-gray-100 rounded-xl p-5">
+          <Text>{companyCode}</Text>
+        </View>
       </View>
       <View className="flex flex-col mt-10">
         <Text className="text-black font-light text-2xl mb-2">Admin:</Text>

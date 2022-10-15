@@ -3,7 +3,7 @@ import React from 'react'
 
 const LoadingIcon = () => {
   return (
-    <ActivityIndicator size={24}/>
+    <ActivityIndicator size={40}/>
   )
 }
 
