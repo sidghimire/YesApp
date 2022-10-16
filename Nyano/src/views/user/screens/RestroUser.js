@@ -18,18 +18,38 @@ const auth = getAuth();
 
 const RestroUser = ({navigation}) => {
   const [tableData, setTableData] = useState([]);
+  const [occupiedTable, setOccupiedTable] = useState([]);
   const [loading, setLoading] = useState(true);
   const getTableData = async () => {
-    setLoading(true)
-    const companyCode = await AsyncStorage.getItem('companyCode');
-    const ref = collection(db, 'tableAdminDB', companyCode, 'hotelTable');
-    const snapshot = await getDocs(ref);
-    let data = [];
-    snapshot.forEach(doc => {
-      data.push([doc.id, doc.data()]);
-    });
-    setTableData(data);
-    setLoading(false)
+    setLoading(true);
+    const occupiedTable = [];
+    {
+      const companyCode = await AsyncStorage.getItem('companyCode');
+      const ref = collection(db, 'order', companyCode, 'restaurant');
+      const snapshot = await getDocs(ref);
+      let data = [];
+      snapshot.forEach(docs => {
+        data.push([docs.id, docs.data()]);
+        occupiedTable.push(docs.data().tableNumber);
+      });
+      setOccupiedTable(data);
+    }
+    {
+      setLoading(true);
+      const companyCode = await AsyncStorage.getItem('companyCode');
+      const ref = collection(db, 'tableAdminDB', companyCode, 'hotelTable');
+      let q = ref;
+      if (occupiedTable.length != 0) {
+        q = query(ref, where('tableNumber', 'not-in', occupiedTable));
+      }
+      const snapshot = await getDocs(q);
+      let data = [];
+      snapshot.forEach(doc => {
+        data.push([doc.id, doc.data()]);
+      });
+      setTableData(data);
+    }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -63,13 +83,36 @@ const RestroUser = ({navigation}) => {
           />
         </TouchableOpacity>
       </View>
-      <Text className="text-black font-light text-2xl mt-5 ml-2 mb-2">
-        Table List
-      </Text>
+
       <ScrollView
         refreshControl={
-          <RefreshControl loading={loading} onRefresh={getTableData} />
+          <RefreshControl refreshing={loading} onRefresh={getTableData} />
         }>
+        <Text className="text-black font-light text-xl mt-5 ml-2 mb-2">
+          Occupied Table
+        </Text>
+        <View className="flex flex-row pl-5" style={{flexWrap: 'wrap'}}>
+          {occupiedTable.map(data => {
+            return (
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('OccupiedOrder', {
+                    tableNumber: data[1].tableNumber,
+                  });
+                }}
+                activeOpacity={0.7}
+                className="bg-yellow-600 rounded-xl w-16 h-16 m-2">
+                <Text className="mx-auto text-white my-auto">
+                  {data[1].tableNumber}
+                </Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+
+        <Text className="text-black font-light text-xl mt-5 ml-2 mb-2">
+          Empty Table
+        </Text>
         <View className="flex flex-row pl-5" style={{flexWrap: 'wrap'}}>
           {tableData.map(data => {
             return (

@@ -13,7 +13,9 @@ import {
   query,
   where,
   addDoc,
-  
+  doc,
+  updateDoc,
+  getDoc
 } from 'firebase/firestore/lite';
 import {ScrollView} from 'react-native-gesture-handler';
 const db = getFirestore();
@@ -41,8 +43,8 @@ const OrderRow = props => {
   );
 };
 
-const MakeOrder = ({route, navigation}, props) => {
-  const {tableNumber, roomId} = route.params;
+const AddMoreOrder = ({route, navigation}, props) => {
+  const {tableNumber, tableId} = route.params;
   const [foodName, setFoodName] = useState();
   const [foodList, setFoodList] = useState([]);
   const [quantity, setQuantity] = useState('1');
@@ -111,9 +113,13 @@ const MakeOrder = ({route, navigation}, props) => {
 const sendToKitchen=async()=>{
   const date=new Date()
   const companyCode=await AsyncStorage.getItem('companyCode')
-  const ref=collection(db,'order',companyCode,'restaurant')
-  let data=[JSON.stringify([orderList])]
-  await addDoc(ref,{data,tableNumber,date})
+  const ref=doc(db,'order',companyCode,'restaurant',tableId)
+  const snapshot=await getDoc(ref)
+  const data2=snapshot.data()
+  let d1=JSON.parse(data2.data)
+  let d2=(d1.concat([orderList]))
+  let data=[JSON.stringify(d2)]
+  await updateDoc(ref,{data})
   navigation.goBack()
 }
 
@@ -126,7 +132,7 @@ const sendToKitchen=async()=>{
           <Icon name="chevron-back" size={30} color="#000" />
         </TouchableOpacity>
         <Text className="text-black font-extrabold text-3xl my-auto mx-auto">
-          Make Order
+          Add More Order
         </Text>
       </View>
       <View className="flex flex-row ol mt-10">
@@ -236,4 +242,4 @@ const sendToKitchen=async()=>{
   );
 };
 
-export default MakeOrder;
+export default AddMoreOrder;

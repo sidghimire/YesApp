@@ -27,7 +27,7 @@ const AssignRoom = ({route, navigation}) => {
     const companyCode = await AsyncStorage.getItem('companyCode');
     const ref = collection(db, 'bookings', companyCode, 'checkIn');
     await addDoc(ref, {
-      roomNumber: roomNumber,
+      roomNumber: roomNumber[0],
       customerName: name,
       customerPhone: phone,
       customerIdentity: citizenship,
@@ -40,7 +40,7 @@ const AssignRoom = ({route, navigation}) => {
     const companyCode = await AsyncStorage.getItem('companyCode');
     const ref = collection(db, 'bookings', companyCode, 'reservation');
     await addDoc(ref, {
-      roomNumber: roomNumber,
+      roomNumber: roomNumber[0],
       customerName: name,
       customerPhone: phone,
       customerIdentity: citizenship,
@@ -63,8 +63,7 @@ const AssignRoom = ({route, navigation}) => {
       <View className="flex flex-row ol mt-10">
         <TextInput
           className="flex-1 border border-gray-400 rounded-xl p-3 pl-5 text-black"
-          placeholder="Room Number: "
-          value={roomNumber}
+          value={"Room Number: "+roomNumber}
           editable={false}
         />
       </View>
