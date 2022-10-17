@@ -131,7 +131,10 @@ const MakeOrder = ({route, navigation}, props) => {
     const ref = collection(db, 'order', companyCode, 'restaurant');
     let data = [JSON.stringify([orderList])];
     await addDoc(ref, {data, tableNumber, date});
-    navigation.goBack();
+    navigation.reset({
+      index: 0,
+      routes: [{name: 'RestroUser'}],
+    });
   };
 
   return (

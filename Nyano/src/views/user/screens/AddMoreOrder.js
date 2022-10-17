@@ -21,28 +21,6 @@ import {ScrollView} from 'react-native-gesture-handler';
 const db = getFirestore();
 const auth = getAuth();
 
-const OrderRow = props => {
-  const {data, index, key} = props;
-  return (
-    <View key={key} className="flex flex-row mx-auto">
-      <View className="flex flex-row ">
-        <View className="w-1/6 bg-gray-100 py-1">
-          <Text className="text-sm text-center">{index + 1}</Text>
-        </View>
-        <View className="w-2/6 py-1 border-0 ">
-          <Text className="text-sm text-center">{data.foodName}</Text>
-        </View>
-        <View className="w-1/6 py-1 ">
-          <Text className="text-sm text-center">{data.quantity}</Text>
-        </View>
-        <View className="w-2/6 py-1">
-          <Text className="text-sm text-center">{data.basicPrice}</Text>
-        </View>
-      </View>
-    </View>
-  );
-};
-
 const AddMoreOrder = ({route, navigation}, props) => {
   const {tableNumber, tableId} = route.params;
   const [foodName, setFoodName] = useState();
@@ -152,8 +130,7 @@ const AddMoreOrder = ({route, navigation}, props) => {
     );
   };
 
-  const sendToKitchen = async () => {
-    const date = new Date();
+  const sendToKitchen = async () => {    
     const companyCode = await AsyncStorage.getItem('companyCode');
     const ref = doc(db, 'order', companyCode, 'restaurant', tableId);
     const snapshot = await getDoc(ref);

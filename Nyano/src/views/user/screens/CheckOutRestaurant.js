@@ -13,6 +13,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import {getAuth} from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NativeSearchSelect from '../../../packages/NativeSearchSelect';
+
 import {
   getFirestore,
   getDocs,
@@ -20,64 +21,65 @@ import {
   query,
   where,
   addDoc,
+  getDoc,
+  doc,
+  deleteDoc,
 } from 'firebase/firestore/lite';
+import {StackActions} from '@react-navigation/native';
 const db = getFirestore();
 const auth = getAuth();
-
-const OrderRow = props => {
-  const {data, index} = props;
-
-  return (
-    <View key={index} className="flex flex-row mx-auto">
-      <View className="flex flex-row px-5">
-        <View className="w-1/6 bg-gray-100 py-1">
-          <Text className="text-sm text-center">{index + 1}</Text>
-        </View>
-        <View className="w-2/6 py-1 border-0 ">
-          <Text className="text-sm text-center">{data.foodName}</Text>
-        </View>
-        <View className="w-1/6 py-1 ">
-          <Text className="text-sm text-center">{data.quantity}</Text>
-        </View>
-        <View className="w-2/6 py-1">
-          <Text className="text-sm text-right">{data.basicPrice}</Text>
-        </View>
-      </View>
-    </View>
-  );
-};
 
 const OccupiedOrder = ({route, navigation}, props) => {
   const {tableNumber, roomId} = route.params;
   const [tableData, setTableData] = useState();
   const [tableId, setTableId] = useState();
   const [loading, setLoading] = useState(true);
+  const [total, setTotal] = useState('0');
+  const [discount, setDiscount] = useState('0');
+
   const getOrderData = async () => {
     setLoading(true);
     const companyCode = await AsyncStorage.getItem('companyCode');
     const ref = collection(db, 'order', companyCode, 'restaurant');
     const q = query(ref, where('tableNumber', '==', tableNumber));
     const snapshot = await getDocs(q);
+    let menuData;
     snapshot.forEach(doc => {
       const d = doc.data();
       const data = JSON.parse(d.data);
       setTableData(data);
+      menuData = data;
       setTableId(doc.id);
     });
+    let price = 0;
+    menuData.forEach(data => {
+      let i = 0;
+      for (i = 0; i < data.length; i++) {
+        price =
+          price + parseFloat(data[i].quantity) * parseFloat(data[i].basicPrice);
+      }
+    });
+    setTotal(price);
     setLoading(false);
   };
-  const fun1=()=>{
-    
-    navigation.navigate('AddToRoom', {
-      tableNumber: tableNumber,
-      tableData:tableData,
-      tableId:tableId
-    })
-  }
+
   useEffect(() => {
     getOrderData();
   }, []);
 
+  const checkOutRestaurant = async () => {
+    const companyCode = await AsyncStorage.getItem('companyCode');
+    const ref = doc(db, 'order', companyCode, 'restaurant', tableId);
+    const snapshot = await getDoc(ref);
+    const data = snapshot.data();
+    const ref2 = collection(db, 'history', companyCode, 'restaurant');
+    await addDoc(ref2, data);
+    await deleteDoc(ref);
+    navigation.reset({
+      index: 0,
+      routes: [{name: 'RestroUser'}],
+    });
+  };
 
   if (tableData == null) {
     return (
@@ -93,7 +95,7 @@ const OccupiedOrder = ({route, navigation}, props) => {
             <Icon name="chevron-back" size={30} color="#000" />
           </TouchableOpacity>
           <Text className="text-black font-extrabold text-3xl my-auto mx-auto">
-            Adjust Order
+            Checkout Section
           </Text>
         </View>
         <View className="flex flex-row ol mt-10">
@@ -113,69 +115,61 @@ const OccupiedOrder = ({route, navigation}, props) => {
           {tableData.map((data, index) => {
             let i = 0;
             let price = 0;
-            let open = true;
             for (i = 0; i < data.length; i++) {
               price =
                 price +
                 parseFloat(data[i].quantity) * parseFloat(data[i].basicPrice);
             }
+
             return (
-              <View className="my-4">
-                <TouchableOpacity className="flex flex-row p-4 bg-orange-300 my-1 rounded">
-                  <Text className="font-light text-black ">
-                    Order No. :{index + 1}
-                  </Text>
-                  <Text className="font-light text-black ml-auto">
-                    Rs. {price}
-                  </Text>
-                </TouchableOpacity>
-                {open ? (
-                  <>
-                    {data.map((datas, index) => (
-                      <OrderRow data={datas} index={index} />
-                    ))}
-                  </>
-                ) : (
-                  <></>
-                )}
+              <View className="flex flex-row p-4 bg-orange-300 my-1 rounded">
+                <Text className="font-light text-black ">
+                  Order No. :{index + 1}
+                </Text>
+                <Text className="font-light text-black ml-auto">
+                  Rs. {price}
+                </Text>
               </View>
             );
           })}
-          <TouchableOpacity
-            onPress={() =>{console.log(tableData);
-              navigation.navigate('AddMoreOrder', {
-                tableNumber: tableNumber,
-                tableId: tableId,
-                tableData:tableData
-              })
-            }
-            }
-            className=" p-4 mr-2 rounded-xl border border-green-700 mt-10">
-            <Text className="mx-auto my-auto text-green-700 font-light">
-              Add More Order
+          <View className="flex flex-row p-4 bg-gray-600 mt-10 rounded">
+            <View className="flex-1">
+              <Text className="font-light text-white ml-auto mr-5">Cost:</Text>
+            </View>
+            <Text className="font-light text-white ml-auto">Rs. {total}</Text>
+          </View>
+          <View className="flex flex-row p-4 py-1 bg-gray-600 mt-2 rounded">
+            <View className="flex-1">
+              <Text className="font-light text-white ml-auto mr-5 my-auto">
+                Discount
+              </Text>
+            </View>
+            <TextInput
+              keyboardType="numeric"
+              placeholder="Amount"
+              placeholderTextColor={'#cfcfcf'}
+              className=" text-gray-200  h-9 rounded"
+              onChangeText={text => setDiscount(parseInt(text))}
+              value={discount}
+            />
+          </View>
+          <View className="flex flex-row p-4 bg-green-600 mt-2 rounded">
+            <View className="flex-1">
+              <Text className="font-light text-white ml-auto mr-5">
+                Total:{' '}
+              </Text>
+            </View>
+            <Text className="font-light text-white ml-auto">
+              Rs. {total - discount}
             </Text>
-          </TouchableOpacity>
-          <View className="flex flex-row mt-20">
+          </View>
+
+          <View className="flex flex-row mt-44 ">
             <TouchableOpacity
               activeOpacity={0.7}
-              onPress={() =>
-                navigation.navigate('CheckOutRestaurant', {
-                  tableNumber: tableNumber,
-                })
-              }
-              className="flex-1 p-4 mr-2 rounded-xl bg-green-700">
-              <Text className="mx-auto my-auto text-white font-light">
-                Checkout Restaurant
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() =>fun1()
-                
-              }
-              className="flex-1 p-4 ml-2 rounded-xl border border-green-700">
-              <Text className="mx-auto my-auto text-green-700 font-light">
-                Add To Room
-              </Text>
+              onPress={() => checkOutRestaurant()}
+              className="flex-1 p-4 rounded-xl bg-green-700">
+              <Text className="mx-auto my-auto text-white font-light">Pay</Text>
             </TouchableOpacity>
           </View>
         </ScrollView>

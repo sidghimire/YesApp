@@ -34,7 +34,10 @@ const AssignRoom = ({route, navigation}) => {
       checkIn: checkIn,
       checkOut: checkOut,
     });
-    navigation.goBack()
+    navigation.reset({
+      index: 0,
+      routes: [{name: 'RoomUser'}],
+    });
   };
   const reserveRoom = async () => {
     const companyCode = await AsyncStorage.getItem('companyCode');
@@ -47,7 +50,10 @@ const AssignRoom = ({route, navigation}) => {
       checkIn: checkIn,
       checkOut: checkOut,
     });
-    navigation.goBack()
+    navigation.reset({
+      index: 0,
+      routes: [{name: 'RoomUser'}],
+    });
   };
 
   return (
