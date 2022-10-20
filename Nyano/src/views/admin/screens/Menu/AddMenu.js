@@ -13,19 +13,24 @@ import {
   getDoc,
 } from 'firebase/firestore/lite';
 import {getAuth} from 'firebase/auth';
-import LoadingIcon from '../../../components/LoadingIcon';
+import LoadingIcon from '../../../../components/LoadingIcon';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import DangerError from '../../../../components/DangerError';
+import LoadingMsg from '../../../../components/LoadingMsg';
 
 const db = getFirestore();
 const auth = getAuth();
 
 const AddMenu = ({navigation}) => {
   const [roomNumber, setRoomNumber] = useState();
-  const [type, setType] = useState();
+  const [type, setType] = useState('');
   const [category, setCategory] = useState([]);
-  const [foodName, setFoodName] = useState();
-  const [price, setPrice] = useState();
-  const [companyCode, setCompanyCode] = useState();
+  const [foodName, setFoodName] = useState('');
+  const [price, setPrice] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('Error Check');
+  const [searching, setSearching] = useState(false);
 
   const getCategory = async () => {
     const ref = doc(db, 'menu', 'menuCategory');
@@ -41,26 +46,44 @@ const AddMenu = ({navigation}) => {
       setCategory(categoryArray);
     }
   };
-  const getCompanyCode = async () => {
-    const code = await AsyncStorage.getItem('companyCode');
-    setCompanyCode(code);
-  };
-  const uploadValue = async () => {
-    if (type != '' && foodName != '' && price != '') {
-      const ref = collection(db, 'hotelMenu', 'foodList', companyCode);
 
-      await addDoc(ref, {
-        foodName: foodName,
-        price: price,
-        category: type,
+  const uploadValue = async () => {
+    const companyCode = await AsyncStorage.getItem('companyCode');
+    setShowError(false);
+    setSearching(true);
+    if (type != '' && foodName != '' && price != '') {
+      const ref = collection(db, 'hotelMenu', companyCode, 'foodList');
+      const q = query(ref, where('foodName', '==', foodName.toLowerCase()));
+      const snapshot2 = await getDocs(q);
+      let size = 0;
+      snapshot2.forEach(docs => {
+        size = size + 1;
       });
+      if (size == 0) {
+        setLoading(true);
+        await addDoc(ref, {
+          foodName: foodName.toLowerCase(),
+          price: price,
+          category: type,
+        });
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'MenuUser'}],
+        });
+      } else {
+        setSearching(false);
+        setShowError(true);
+        setErrorMsg('Room Already Exists');
+      }
+    } else {
+      setSearching(false);
+      setShowError(true);
+      setErrorMsg('Please fill in all input');
     }
-    navigation.goBack();
   };
 
   useEffect(() => {
     getCategory();
-    getCompanyCode();
   }, []);
 
   if (category.length == 0) {
@@ -122,8 +145,13 @@ const AddMenu = ({navigation}) => {
             onChangeText={text => setPrice(text)}
           />
         </View>
+        <View className="mt-5 flex flex-col">
+          <DangerError msg={errorMsg} visibility={showError} />
+          <LoadingMsg visibility={searching} />
+        </View>
         <View className="flex flex-row mt-16">
           <TouchableOpacity
+            disabled={loading}
             activeOpacity={0.7}
             className="bg-black rounded-full flex-1 p-4"
             onPress={uploadValue}>

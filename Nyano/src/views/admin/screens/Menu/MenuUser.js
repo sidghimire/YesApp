@@ -1,7 +1,7 @@
 import {View, Text, TextInput, TouchableOpacity} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
-import ToggleMenu from '../../../components/ToogleMenu';
+import ToggleMenu from '../../../../components/ToogleMenu';
 import {
   getFirestore,
   getDocs,
@@ -17,12 +17,26 @@ const auth = getAuth();
 
 const MenuUser = ({navigation}) => {
   const [foodList, setFoodList] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [foodList2, setFoodList2] = useState([]);
   const [refreshing, setRefreshing] = useState(true);
+  const [searchText, setSearchText] = useState();
+
+  const searchArray = text => {
+    setSearchText(text);
+    let len = text.length;
+    const arr = [];
+    foodList2.forEach(doc => {
+      if (doc.foodName.substring(0, len).toLowerCase() == text.toLowerCase()) {
+        arr.push(doc);
+      }
+    });
+    setFoodList(arr);
+  };
+
   const getMenuData = async () => {
     setRefreshing(true);
     const companyCode = await AsyncStorage.getItem('companyCode');
-    const ref = collection(db, 'hotelMenu', 'foodList', companyCode);
+    const ref = collection(db, 'hotelMenu', companyCode, 'foodList');
     const snapshot = await getDocs(ref);
     const foodArray = [];
 
@@ -31,6 +45,7 @@ const MenuUser = ({navigation}) => {
       foodArray.push(data);
     });
     setFoodList(foodArray);
+    setFoodList2(foodArray);
     setRefreshing(false);
   };
 
@@ -54,7 +69,12 @@ const MenuUser = ({navigation}) => {
           color="#bfbfbf"
           style={{marginTop: 'auto', marginBottom: 'auto', marginRight: 10}}
         />
-        <TextInput className="  " placeholder="Search for a product: " />
+        <TextInput
+          value={searchText}
+          onChangeText={text => searchArray(text)}
+          placeholder="Search for a product: "
+          className="flex-1"
+        />
       </View>
       <ScrollView
         className="flex-1 bg-white"

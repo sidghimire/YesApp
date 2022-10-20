@@ -84,12 +84,12 @@ const MakeOrder = ({route, navigation}, props) => {
   }, []);
   const removeOrder = index => {
     index = index;
-    const item=orderList
-    let get=item.splice(index, 1);
+    const item = orderList;
+    let get = item.splice(index, 1);
     setOrderList([]);
     setOrderList([...item]);
-    const deduct=(parseFloat(get[0].basicPrice)*parseFloat(get[0].quantity))
-    setTotal(total-deduct)
+    const deduct = parseFloat(get[0].basicPrice) * parseFloat(get[0].quantity);
+    setTotal(total - deduct);
   };
   const OrderRow = props => {
     const {data, index, key} = props;
@@ -237,7 +237,6 @@ const MakeOrder = ({route, navigation}, props) => {
         </View>
         {editOrder ? (
           <View className="flex flex-row mt-5">
-            
             <TouchableOpacity
               onPress={() => setEditOrder(false)}
               className="flex-1 p-4 mx-1 rounded-xl  bg-green-700">

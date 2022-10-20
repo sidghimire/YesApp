@@ -12,30 +12,56 @@ import {
 } from 'firebase/firestore/lite';
 import {getAuth} from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import DangerError from '../../../../components/DangerError';
+import LoadingMsg from '../../../../components/LoadingMsg';
 
 const db = getFirestore();
 const auth = getAuth();
 
 const AddRoom = ({navigation}) => {
-  const [roomNumber, setRoomNumber] = useState();
-  const [type, setType] = useState();
-  const [price, setPrice] = useState();
-  const [companyId, setCompanyId] = useState();
+  const [roomNumber, setRoomNumber] = useState('');
+  const [type, setType] = useState('');
+  const [price, setPrice] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('Error Check');
+  const [searching, setSearching] = useState(false);
 
   const uploadValue = async () => {
+    setShowError(false);
+    setSearching(true);
     if (roomNumber != '' && type != '' && price != '') {
       const companyCode = await AsyncStorage.getItem('companyCode');
       const ref = collection(db, 'roomAdminDB', companyCode, 'hotelRoom');
-
-      const snapshot = await addDoc(ref, {
-        admin: auth.currentUser.uid,
-        roomNumber: roomNumber,
-        type: type,
-        price: price,
-        companyId: companyCode,
+      const repeatRef = collection(db, 'roomAdminDB', companyCode, 'hotelRoom');
+      const q = query(repeatRef, where('roomNumber', '==', roomNumber));
+      const snapshot2 = await getDocs(q);
+      let size = 0;
+      snapshot2.forEach(docs => {
+        size = size + 1;
       });
-
-      navigation.goBack();
+      if (size == 0) {
+        setLoading(true);
+        const snapshot = await addDoc(ref, {
+          admin: auth.currentUser.uid,
+          roomNumber: roomNumber,
+          type: type,
+          price: price,
+          companyId: companyCode,
+        });
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Rooms'}],
+        });
+      } else {
+        setSearching(false);
+        setShowError(true);
+        setErrorMsg('Room Already Exists');
+      }
+    } else {
+      setSearching(false);
+      setShowError(true);
+      setErrorMsg('Please fill in all input');
     }
   };
 
@@ -76,8 +102,13 @@ const AddRoom = ({navigation}) => {
           onChangeText={text => setPrice(text)}
         />
       </View>
+      <View className="mt-5 flex flex-col">
+        <DangerError msg={errorMsg} visibility={showError} />
+        <LoadingMsg visibility={searching} />
+      </View>
       <View className="flex flex-row mt-16">
         <TouchableOpacity
+          disabled={loading}
           activeOpacity={0.7}
           className="bg-black rounded-full flex-1 p-4"
           onPress={uploadValue}>

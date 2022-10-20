@@ -11,23 +11,56 @@ import {
 } from 'firebase/firestore/lite';
 import {getAuth} from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import DangerError from '../../../../components/DangerError';
+import LoadingMsg from '../../../../components/LoadingMsg';
 
 const db = getFirestore();
 const auth = getAuth();
 
 const AddTable = ({navigation}) => {
-  const [tableNumber, setTableNumber] = useState();
+  const [tableNumber, setTableNumber] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('Error Check');
+  const [searching, setSearching] = useState(false);
   const addTable = async () => {
+    setShowError(false);
+    setSearching(true);
     if (tableNumber != '') {
-      const companyCode=await AsyncStorage.getItem('companyCode')
-      const ref = collection(db, 'tableAdminDB',companyCode,'hotelTable');
+      const companyCode = await AsyncStorage.getItem('companyCode');
+      const repeatRef = collection(
+        db,
+        'tableAdminDB',
+        companyCode,
+        'hotelTable',
+      );
+      const q = query(repeatRef, where('tableNumber', '==', tableNumber));
+      const snapshot2 = await getDocs(q);
+      let size = 0;
+      snapshot2.forEach(docs => {
+        size = size + 1;
+      });
+      if (size == 0) {
+        setLoading(true);
+        const ref = collection(db, 'tableAdminDB', companyCode, 'hotelTable');
         const snapshot = await addDoc(ref, {
           admin: auth.currentUser.uid,
           tableNumber: tableNumber,
           companyId: companyCode,
         });
-      navigation.goBack();
-      
+        navigation.reset({
+          index: 0,
+          routes: [{name: 'Restaurant'}],
+        });
+      } else {
+        setSearching(false);
+        setShowError(true);
+        setErrorMsg('Table Number Already Exists');
+      }
+    } else {
+      setSearching(false);
+      setShowError(true);
+      setErrorMsg('Please Enter Table Number');
     }
   };
   return (
@@ -48,9 +81,14 @@ const AddTable = ({navigation}) => {
           onChangeText={text => setTableNumber(text)}
         />
       </View>
-
+      <View className="mt-5 flex flex-col">
+        <DangerError msg={errorMsg} visibility={showError} />
+        <LoadingMsg visibility={searching} />
+      </View>
       <View className="flex flex-row mt-16">
         <TouchableOpacity
+          disabled={loading}
+          activeOpacity={0.7}
           className="bg-black rounded-full flex-1 p-4"
           onPress={addTable}>
           <Text className="text-white text-center tracking-widest">Add</Text>

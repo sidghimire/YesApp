@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
-import ToggleMenu from '../../../components/ToogleMenu';
+import ToggleMenu from '../../../../components/ToogleMenu';
 import {
   getFirestore,
   getDocs,
@@ -23,20 +23,36 @@ const db = getFirestore();
 const auth = getAuth();
 
 const Restaurant = ({navigation}) => {
-  const [companyId, setCompanyId] = useState();
+  const [searchText, setSearchText] = useState();
   const [tableData, setTableData] = useState([]);
+  const [tableData2, setTableData2] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const searchArray = text => {
+    setSearchText(text);
+    let len = text.length;
+    const arr = [];
+    tableData2.forEach(doc => {
+      if (
+        doc[1].tableNumber.substring(0, len).toLowerCase() == text.toLowerCase()
+      ) {
+        arr.push(doc);
+      }
+    });
+    setTableData(arr);
+  };
 
   const getTableData = async () => {
     setLoading(true);
-    const companyCode=await AsyncStorage.getItem('companyCode')
-    const ref = collection(db, 'tableAdminDB',companyCode,'hotelTable');
+    const companyCode = await AsyncStorage.getItem('companyCode');
+    const ref = collection(db, 'tableAdminDB', companyCode, 'hotelTable');
     const snapshot = await getDocs(ref);
     let data = [];
     snapshot.forEach(doc => {
       data.push([doc.id, doc.data()]);
     });
     setTableData(data);
+    setTableData2(data);
     setLoading(false);
   };
 
@@ -52,26 +68,21 @@ const Restaurant = ({navigation}) => {
           Restaurant
         </Text>
       </View>
-      <View className="flex flex-row mt-10">
-        <TextInput
-          className="flex-1 border border-gray-400 rounded-l-xl p-3 pl-5"
-          placeholder="Table Number: "
+      <View className="flex flex-row bg-gray-100 rounded-xl p-1 pl-5 mb-5 mt-10">
+        <Icon
+          name="search-outline"
+          size={20}
+          color="#bfbfbf"
+          style={{marginTop: 'auto', marginBottom: 'auto', marginRight: 10}}
         />
-        <TouchableOpacity className="bg-black rounded-r-xl p-3 w-16 ">
-          <Icon
-            name="search"
-            size={20}
-            color="#fff"
-            style={{
-              marginLeft: 'auto',
-              marginRight: 'auto',
-              marginTop: 'auto',
-              marginBottom: 'auto',
-            }}
-          />
-        </TouchableOpacity>
+        <TextInput
+          value={searchText}
+          onChangeText={text => searchArray(text)}
+          placeholder="Search for table number: "
+          className="flex-1"
+        />
       </View>
-      <Text className="text-black font-light text-2xl mt-5 ml-2 mb-2">
+      <Text className="text-black font-light text-2xl mt-5 mb-10 ml-2 ">
         Table List
       </Text>
       <ScrollView

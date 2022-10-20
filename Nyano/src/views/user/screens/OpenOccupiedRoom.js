@@ -28,7 +28,6 @@ const OpenOccupiedRoom = ({navigation, route}) => {
     snapshot.forEach(datas => {
       const data = datas.data();
       setPublicInfo(data);
-      setRoomId(datas.id);
     });
   };
   useEffect(() => {
@@ -102,12 +101,14 @@ const OpenOccupiedRoom = ({navigation, route}) => {
 
         <View className="flex flex-row mt-20">
           <TouchableOpacity
+            onPress={() =>
+              navigation.navigate('CheckOutBill', {roomNumber: roomNumber})
+            }
             className="flex-1 p-4 mr-2 rounded-xl bg-red-700">
             <Text className="mx-auto my-auto text-white font-light">
               Check Out
             </Text>
           </TouchableOpacity>
-         
         </View>
       </View>
     );

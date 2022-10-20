@@ -155,9 +155,7 @@ const OccupiedOrder = ({route, navigation}, props) => {
           </View>
           <View className="flex flex-row p-4 bg-green-600 mt-2 rounded">
             <View className="flex-1">
-              <Text className="font-light text-white ml-auto mr-5">
-                Total:{' '}
-              </Text>
+              <Text className="font-light text-white ml-auto mr-5">Total:</Text>
             </View>
             <Text className="font-light text-white ml-auto">
               Rs. {total - discount}

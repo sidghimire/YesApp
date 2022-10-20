@@ -6,46 +6,53 @@ import AdminDashboard from '../views/admin/screens/AdminDashboard';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import Icon from 'react-native-vector-icons/Ionicons';
 import RestroUserStack from '../views/user/routes/RestroUserStack';
-import {getAuth,signOut} from 'firebase/auth'
+import {getAuth, signOut} from 'firebase/auth';
 import RoomUserStack from '../views/user/routes/RoomUserStack';
 const Drawer = createDrawerNavigator();
 
-const auth=getAuth()
+const auth = getAuth();
 
 const UserSideNavigation = () => {
-
-  const CustomSidebar = (props) => {
+  const CustomSidebar = props => {
     return (
       <View className="p-5 flex flex-col h-full ">
         <Text className="text-2xl text-black tracking-widest mb-10">
           Categories
         </Text>
-        <TouchableOpacity activeOpacity={0.7} className="flex flex-row my-3" onPress={()=>props.navigation.navigate("AdminDashboard")} >
+        <TouchableOpacity
+          activeOpacity={0.7}
+          className="flex flex-row my-3"
+          onPress={() => props.navigation.navigate('AdminDashboard')}>
           <Icon name="grid" size={22} color="#3f3d56" />
           <Text className="text-black my-auto text-base ml-7">Dashboard</Text>
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.7} className="flex flex-row my-3" onPress={()=>props.navigation.navigate("RestroUserStack")}>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          className="flex flex-row my-3"
+          onPress={() => props.navigation.navigate('RestroUserStack')}>
           <Icon name="pizza" size={22} color="#3f3d56" />
           <Text className="text-black my-auto text-base ml-7">Restaurant</Text>
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.7} className="flex flex-row my-3" onPress={()=>props.navigation.navigate("RoomUserStack")}>
+        <TouchableOpacity
+          activeOpacity={0.7}
+          className="flex flex-row my-3"
+          onPress={() => props.navigation.navigate('RoomUserStack')}>
           <Icon name="bed" size={22} color="#3f3d56" />
           <Text className="text-black my-auto text-base ml-7">Rooms</Text>
         </TouchableOpacity>
         <TouchableOpacity activeOpacity={0.7} className="flex flex-row my-3">
-          <Icon name="fast-food" size={22} color="#3f3d56" />
-          <Text className="text-black my-auto text-base ml-7">Kitchen</Text>
+          <Icon name="color-fill" size={22} color="#3f3d56" />
+          <Text className="text-black my-auto text-base ml-7">
+            Housekeeping
+          </Text>
         </TouchableOpacity>
-        <TouchableOpacity activeOpacity={0.7} className="flex flex-row my-3">
-          <Icon name="compass" size={22} color="#3f3d56" />
-          <Text className="text-black my-auto text-base ml-7">History</Text>
-        </TouchableOpacity>
+
         <TouchableOpacity activeOpacity={0.7} className="flex flex-row my-3">
           <Icon name="cog" size={22} color="#3f3d56" />
           <Text className="text-black my-auto text-base ml-7">Setting</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          onPress={()=>auth.signOut()}
+          onPress={() => auth.signOut()}
           activeOpacity={0.7}
           className="flex flex-row my-8 pt-5 border-t-2 border-t-gray-200">
           <Icon name="log-out-outline" size={22} color="#3f3d56" />
@@ -57,7 +64,7 @@ const UserSideNavigation = () => {
 
   return (
     <Drawer.Navigator
-      drawerContent={(props) => <CustomSidebar {...props} />}
+      drawerContent={props => <CustomSidebar {...props} />}
       initialRouteName="AdminDashboard"
       screenOptions={{headerShown: false}}>
       <Drawer.Screen name="AdminDashboard" component={AdminDashboard} />

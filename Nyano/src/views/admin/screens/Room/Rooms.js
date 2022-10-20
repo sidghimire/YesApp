@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
-import ToggleMenu from '../../../components/ToogleMenu';
+import ToggleMenu from '../../../../components/ToogleMenu';
 import {
   getFirestore,
   getDocs,
@@ -23,9 +23,25 @@ const db = getFirestore();
 const auth = getAuth();
 
 const Rooms = ({navigation}) => {
-  const [companyId, setCompanyId] = useState();
+  const [searchText, setSearchText] = useState();
   const [roomData, setRoomData] = useState([]);
+  const [roomData2, setRoomData2] = useState([]);
   const [loading, setLoading] = useState(true);
+
+  const searchArray = text => {
+    setSearchText(text);
+    let len = text.length;
+    const arr = [];
+    roomData2.forEach(doc => {
+      if (
+        doc[1].roomNumber.substring(0, len).toLowerCase() == text.toLowerCase()
+      ) {
+        arr.push(doc);
+      }
+    });
+    setRoomData(arr);
+  };
+
   const getRoomData = async () => {
     setLoading(true);
     const companyCode = await AsyncStorage.getItem('companyCode');
@@ -36,6 +52,7 @@ const Rooms = ({navigation}) => {
       data.push([doc.id, doc.data()]);
     });
     setRoomData(data);
+    setRoomData2(data);
     setLoading(false);
   };
 
@@ -51,26 +68,21 @@ const Rooms = ({navigation}) => {
           Rooms
         </Text>
       </View>
-      <View className="flex flex-row mt-10">
-        <TextInput
-          className="flex-1 border border-gray-400 rounded-l-xl p-3 pl-5"
-          placeholder="Room Number: "
+      <View className="flex flex-row bg-gray-100 rounded-xl p-1 pl-5 mb-5 mt-10">
+        <Icon
+          name="search-outline"
+          size={20}
+          color="#bfbfbf"
+          style={{marginTop: 'auto', marginBottom: 'auto', marginRight: 10}}
         />
-        <TouchableOpacity className="bg-black rounded-r-xl p-3 w-16 ">
-          <Icon
-            name="search"
-            size={20}
-            color="#fff"
-            style={{
-              marginLeft: 'auto',
-              marginRight: 'auto',
-              marginTop: 'auto',
-              marginBottom: 'auto',
-            }}
-          />
-        </TouchableOpacity>
+        <TextInput
+          value={searchText}
+          onChangeText={text => searchArray(text)}
+          placeholder="Search for room number: "
+          className="flex-1"
+        />
       </View>
-      <Text className="text-black font-light text-2xl mt-5 ml-2 mb-2">
+      <Text className="text-black font-light text-2xl mt-2 ml-2 mb-8">
         Room List
       </Text>
       <ScrollView
@@ -81,6 +93,9 @@ const Rooms = ({navigation}) => {
           {roomData.map(data => {
             return (
               <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('RoomDetails', {roomData: data})
+                }
                 activeOpacity={0.7}
                 className="border border-gray-300 rounded-xl w-16 h-16 m-2">
                 <Text className="mx-auto my-auto">{data[1].roomNumber}</Text>

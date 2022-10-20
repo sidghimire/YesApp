@@ -1,7 +1,7 @@
 import {View, Text, TouchableOpacity} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
-import ToggleMenu from '../../../components/ToogleMenu';
+import ToggleMenu from '../../../../components/ToogleMenu';
 import {
   collection,
   getDocs,
@@ -9,7 +9,7 @@ import {
   query,
   updateDoc,
   where,
-  doc
+  doc,
 } from 'firebase/firestore/lite';
 import {getAuth} from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -21,10 +21,10 @@ const auth = getAuth();
 const ManageUsers = ({navigation}) => {
   const [admin, setAdmin] = useState();
   const [requestUsers, setRequestUsers] = useState([]);
-  const [companyCode,setCompanyCode]=useState()
+  const [companyCode, setCompanyCode] = useState();
   const getAdminData = async () => {
     const companyCode = await AsyncStorage.getItem('companyCode');
-    setCompanyCode(companyCode)
+    setCompanyCode(companyCode);
     const ref = collection(db, 'userProfile');
     const q = query(
       ref,
@@ -37,20 +37,20 @@ const ManageUsers = ({navigation}) => {
     });
   };
 
-  const makeEmployee = async(applicant, jobId) => {
-    const companyCode=await AsyncStorage.getItem('companyCode')
-    const ref=doc(db,'userProfile',applicant)
-    await updateDoc(ref,{
+  const makeEmployee = async (applicant, jobId) => {
+    const companyCode = await AsyncStorage.getItem('companyCode');
+    const ref = doc(db, 'userProfile', applicant);
+    await updateDoc(ref, {
       companyCode: companyCode,
-      post:'employee'
-    })
-    deleteRecord(applicant,jobId)
+      post: 'employee',
+    });
+    deleteRecord(applicant, jobId);
   };
-  const deleteRecord = async(applicant, jobId) => {
-    const ref=doc(db,'applyJob',jobId)
-    await updateDoc(ref,{
-      enable:'false'
-    })
+  const deleteRecord = async (applicant, jobId) => {
+    const ref = doc(db, 'applyJob', jobId);
+    await updateDoc(ref, {
+      enable: 'false',
+    });
   };
 
   const getJoinRequests = async () => {
@@ -84,7 +84,9 @@ const ManageUsers = ({navigation}) => {
         </Text>
       </View>
       <View className="flex flex-col mt-10">
-        <Text className="text-black font-light text-2xl mb-2">CompanyCode:</Text>
+        <Text className="text-black font-light text-2xl mb-2">
+          CompanyCode:
+        </Text>
         <View className="bg-gray-100 rounded-xl p-5">
           <Text>{companyCode}</Text>
         </View>
