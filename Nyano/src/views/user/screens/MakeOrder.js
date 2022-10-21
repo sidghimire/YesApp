@@ -6,6 +6,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import {getAuth} from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import NativeSearchSelect from '../../../packages/NativeSearchSelect';
+import DangerError from '../../../components/DangerError';
+import LoadingMsg from '../../../components/LoadingMsg';
 import {
   getFirestore,
   getDocs,
@@ -30,6 +32,10 @@ const MakeOrder = ({route, navigation}, props) => {
   const [checkExists, setCheckExists] = useState();
   const [reset, setReset] = useState(false);
   const [editOrder, setEditOrder] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('Error Check');
+  const [searching, setSearching] = useState(false);
 
   const getMenuData = async () => {
     const companyCode = await AsyncStorage.getItem('companyCode');
@@ -126,15 +132,23 @@ const MakeOrder = ({route, navigation}, props) => {
   };
 
   const sendToKitchen = async () => {
-    const date = new Date();
-    const companyCode = await AsyncStorage.getItem('companyCode');
-    const ref = collection(db, 'order', companyCode, 'restaurant');
-    let data = [JSON.stringify([orderList])];
-    await addDoc(ref, {data, tableNumber, date});
-    navigation.reset({
-      index: 0,
-      routes: [{name: 'RestroUser'}],
-    });
+    setShowError(false);
+    setSearching(true);
+    if (orderList.length > 0) {
+      const date = new Date();
+      const companyCode = await AsyncStorage.getItem('companyCode');
+      const ref = collection(db, 'order', companyCode, 'restaurant');
+      let data = [JSON.stringify([orderList])];
+      await addDoc(ref, {data, tableNumber, date});
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'RestroUser'}],
+      });
+    } else {
+      setSearching(false);
+      setShowError(true);
+      setErrorMsg('Create orders before sending to kitchen');
+    }
   };
 
   return (
@@ -216,7 +230,7 @@ const MakeOrder = ({route, navigation}, props) => {
           {orderList.length == 0 ? (
             <></>
           ) : (
-            <ScrollView className="h-48">
+            <ScrollView className="h-32">
               {orderList.map((data, index) => {
                 return <OrderRow key={index} data={data} index={index} />;
               })}
@@ -234,6 +248,10 @@ const MakeOrder = ({route, navigation}, props) => {
               </View>
             </View>
           </View>
+        </View>
+        <View className="mt-5 flex flex-col">
+          <DangerError msg={errorMsg} visibility={showError} />
+          <LoadingMsg visibility={searching} />
         </View>
         {editOrder ? (
           <View className="flex flex-row mt-5">

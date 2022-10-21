@@ -29,6 +29,16 @@ const VendorRow = props => {
         <Text className="text-black font-light my-auto">
           Available: {data[1]['quantity']}
         </Text>
+        <Text className="text-black font-light my-auto">
+          Rs. {data[1]['price']}/ unit
+        </Text>
+      </View>
+
+      <View className="flex-1 flex flex-col">
+        <Text className="text-black font-light my-auto">Total</Text>
+        <Text className="text-black font-light my-auto">
+          Rs. {parseFloat(data[1]['price']) * parseFloat(data[1]['quantity'])}
+        </Text>
       </View>
       <TouchableOpacity style="ml-auto ">
         <Icon name="information-circle-outline" size={22} color="#000" />
@@ -37,7 +47,7 @@ const VendorRow = props => {
   );
 };
 
-const StockManagement = ({navigation}) => {
+const History = ({navigation}) => {
   const [vendorList, setVendorList] = useState([]);
   const [vendorList2, setVendorList2] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -58,7 +68,7 @@ const StockManagement = ({navigation}) => {
   const getVendorList = async () => {
     setLoading(true);
     const companyCode = await AsyncStorage.getItem('companyCode');
-    const ref = collection(db, 'stock', companyCode, 'total');
+    const ref = collection(db, 'stock', companyCode, 'items');
     const snapshot = await getDocs(ref);
     let arr = [];
     snapshot.forEach(docs => {
@@ -78,7 +88,7 @@ const StockManagement = ({navigation}) => {
       <View className="flex flex-row">
         <ToggleMenu navigation={navigation} />
         <Text className="text-black font-extrabold text-3xl my-auto mx-auto">
-          Stock Management
+          History
         </Text>
       </View>
       <View className="flex flex-row bg-gray-100 rounded-xl p-1 pl-5 mb-5 mt-10">
@@ -117,4 +127,4 @@ const StockManagement = ({navigation}) => {
   );
 };
 
-export default StockManagement;
+export default History;

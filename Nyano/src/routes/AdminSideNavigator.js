@@ -21,6 +21,8 @@ import {
   collection,
   query,
 } from 'firebase/firestore/lite';
+import HistoryNavigator from './HistoryNavigator';
+import EmployeesRouter from './EmployeesRouter';
 
 const auth = getAuth();
 const Drawer = createDrawerNavigator();
@@ -44,7 +46,6 @@ const AdminSideNavigator = () => {
     const snapshot = await getDocs(q);
     snapshot.forEach(docs => {
       const data = docs.data();
-      console.log(data);
       setAddress(data.address);
       setName(data.companyName);
       setPhone(data.phoneNumber);
@@ -142,7 +143,10 @@ const AdminSideNavigator = () => {
             <Icon name="archive" size={22} color="#3f3d56" />
             <Text className="text-black my-auto text-base ml-7">StockList</Text>
           </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.7} className="flex flex-row my-3">
+          <TouchableOpacity
+            onPress={() => props.navigation.navigate('EmployeeNavigator')}
+            activeOpacity={0.7}
+            className="flex flex-row my-3">
             <Icon name="briefcase" size={22} color="#3f3d56" />
             <Text className="text-black my-auto text-base ml-7">Employees</Text>
           </TouchableOpacity>
@@ -155,7 +159,10 @@ const AdminSideNavigator = () => {
               Manage Users
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity activeOpacity={0.7} className="flex flex-row my-3">
+          <TouchableOpacity
+            activeOpacity={0.7}
+            className="flex flex-row my-3"
+            onPress={() => props.navigation.navigate('HistoryNavigator')}>
             <Icon name="compass" size={22} color="#3f3d56" />
             <Text className="text-black my-auto text-base ml-7">History</Text>
           </TouchableOpacity>
@@ -190,6 +197,8 @@ const AdminSideNavigator = () => {
       <Drawer.Screen name="VendorStack" component={VendorStack} />
       <Drawer.Screen name="StockNavigator" component={StockNavigator} />
       <Drawer.Screen name="StockListNavigator" component={StockListNavigator} />
+      <Drawer.Screen name="HistoryNavigator" component={HistoryNavigator} />
+      <Drawer.Screen name="EmployeeNavigator" component={EmployeesRouter} />
     </Drawer.Navigator>
   );
 };

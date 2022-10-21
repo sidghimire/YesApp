@@ -64,30 +64,30 @@ const RestroUser = ({navigation}) => {
           Restaurant
         </Text>
       </View>
-      <View className="flex flex-row mt-10">
-        <TextInput
-          className="flex-1 border border-gray-400 rounded-l-xl p-3 pl-5"
-          placeholder="Table Number: "
-        />
-        <TouchableOpacity className="bg-black rounded-r-xl p-3 w-16 ">
-          <Icon
-            name="search"
-            size={20}
-            color="#fff"
-            style={{
-              marginLeft: 'auto',
-              marginRight: 'auto',
-              marginTop: 'auto',
-              marginBottom: 'auto',
-            }}
-          />
-        </TouchableOpacity>
-      </View>
 
       <ScrollView
         refreshControl={
           <RefreshControl refreshing={loading} onRefresh={getTableData} />
         }>
+        <Text className="text-black font-light text-xl mt-5 ml-2 mb-2">
+          Empty Table
+        </Text>
+        <View className="flex flex-row pl-5" style={{flexWrap: 'wrap'}}>
+          {tableData.map(data => {
+            return (
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('MakeOrder', {
+                    tableNumber: data[1].tableNumber,
+                  });
+                }}
+                activeOpacity={0.7}
+                className="border border-gray-300 rounded-xl w-16 h-16 m-2">
+                <Text className="mx-auto my-auto">{data[1].tableNumber}</Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
         <Text className="text-black font-light text-xl mt-5 ml-2 mb-2">
           Occupied Table
         </Text>
@@ -105,26 +105,6 @@ const RestroUser = ({navigation}) => {
                 <Text className="mx-auto text-white my-auto">
                   {data[1].tableNumber}
                 </Text>
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-
-        <Text className="text-black font-light text-xl mt-5 ml-2 mb-2">
-          Empty Table
-        </Text>
-        <View className="flex flex-row pl-5" style={{flexWrap: 'wrap'}}>
-          {tableData.map(data => {
-            return (
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate('MakeOrder', {
-                    tableNumber: data[1].tableNumber,
-                  });
-                }}
-                activeOpacity={0.7}
-                className="border border-gray-300 rounded-xl w-16 h-16 m-2">
-                <Text className="mx-auto my-auto">{data[1].tableNumber}</Text>
               </TouchableOpacity>
             );
           })}

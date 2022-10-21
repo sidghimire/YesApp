@@ -6,54 +6,74 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import {addDoc, collection, getFirestore} from 'firebase/firestore/lite';
 import {getAuth} from 'firebase/auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import DangerError from '../../../components/DangerError';
+import LoadingMsg from '../../../components/LoadingMsg';
 
 const db = getFirestore();
 const auth = getAuth();
 
 const AssignRoom = ({route, navigation}) => {
   const {roomNumber, roomId} = route.params;
-  const [date, setDate] = useState('Date');
   const [mode, setMode] = useState('date');
   const [showCheckIn, setShowCheckIn] = useState(false);
   const [showCheckOut, setShowCheckOut] = useState(false);
   const [checkOut, setCheckOut] = useState(new Date());
   const [checkIn, setCheckIn] = useState(new Date());
+  const [name, setName] = useState('');
+  const [phone, setPhone] = useState('');
+  const [citizenship, setCitizenship] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [showError, setShowError] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('Error Check');
+  const [searching, setSearching] = useState(false);
 
-  const [name, setName] = useState();
-  const [phone, setPhone] = useState();
-  const [citizenship, setCitizenship] = useState();
-
-  const checkInUser = async() => {
+  const checkInUser = async () => {
+    setShowError(false);
+    setSearching(true);
     const companyCode = await AsyncStorage.getItem('companyCode');
     const ref = collection(db, 'bookings', companyCode, 'checkIn');
-    await addDoc(ref, {
-      roomNumber: roomNumber[0],
-      customerName: name,
-      customerPhone: phone,
-      customerIdentity: citizenship,
-      checkIn: checkIn,
-      checkOut: checkOut,
-    });
-    navigation.reset({
-      index: 0,
-      routes: [{name: 'RoomUser'}],
-    });
+    if (name != '' && phone != '' && citizenship != '') {
+      await addDoc(ref, {
+        roomNumber: roomNumber[0],
+        customerName: name,
+        customerPhone: phone,
+        customerIdentity: citizenship,
+        checkIn: checkIn,
+        checkOut: checkOut,
+      });
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'RoomUser'}],
+      });
+    } else {
+      setSearching(false);
+      setShowError(true);
+      setErrorMsg('Please fill in all input');
+    }
   };
   const reserveRoom = async () => {
+    setShowError(false);
+    setSearching(true);
     const companyCode = await AsyncStorage.getItem('companyCode');
     const ref = collection(db, 'bookings', companyCode, 'reservation');
-    await addDoc(ref, {
-      roomNumber: roomNumber[0],
-      customerName: name,
-      customerPhone: phone,
-      customerIdentity: citizenship,
-      checkIn: checkIn,
-      checkOut: checkOut,
-    });
-    navigation.reset({
-      index: 0,
-      routes: [{name: 'RoomUser'}],
-    });
+    if (name != '' && phone != '' && citizenship != '') {
+      await addDoc(ref, {
+        roomNumber: roomNumber[0],
+        customerName: name,
+        customerPhone: phone,
+        customerIdentity: citizenship,
+        checkIn: checkIn,
+        checkOut: checkOut,
+      });
+      navigation.reset({
+        index: 0,
+        routes: [{name: 'RoomUser'}],
+      });
+    } else {
+      setSearching(false);
+      setShowError(true);
+      setErrorMsg('Please fill in all input');
+    }
   };
 
   return (
@@ -69,7 +89,7 @@ const AssignRoom = ({route, navigation}) => {
       <View className="flex flex-row ol mt-10">
         <TextInput
           className="flex-1 border border-gray-400 rounded-xl p-3 pl-5 text-black"
-          value={"Room Number: "+roomNumber}
+          value={'Room Number: ' + roomNumber}
           editable={false}
         />
       </View>
@@ -143,9 +163,14 @@ const AssignRoom = ({route, navigation}) => {
         ) : (
           <></>
         )}
+        <View className="mt-5 flex flex-col">
+          <DangerError msg={errorMsg} visibility={showError} />
+          <LoadingMsg visibility={searching} />
+        </View>
 
         <View className="flex flex-row mt-10">
           <TouchableOpacity
+            disabled={loading}
             className="flex-1 p-4 mr-2 rounded-xl bg-green-700"
             onPress={checkInUser}>
             <Text className="mx-auto my-auto text-white font-light">
@@ -153,6 +178,7 @@ const AssignRoom = ({route, navigation}) => {
             </Text>
           </TouchableOpacity>
           <TouchableOpacity
+            disabled={loading}
             className="flex-1 p-4 ml-2 rounded-xl border border-green-700"
             onPress={reserveRoom}>
             <Text className="mx-auto my-auto text-green-700 font-light">
