@@ -1,20 +1,26 @@
-const { app, BrowserWindow } = require("electron");
+const { app, BrowserWindow, screen } = require("electron");
 
 require("@electron/remote/main").initialize();
 
 function createWindow() {
+  const display = screen.getPrimaryDisplay();
+  const maxiSize = display.workAreaSize;
+
   const win = new BrowserWindow({
-    width: 800,
-    height: 600,
+    resizable: false,
+    height: maxiSize.height,
+    width: maxiSize.width,
     webPreferences: {
       enableRemoteModule: true,
     },
+    autoHideMenuBar: true,
   });
   win.loadURL("http://localhost:3000");
+  win.setMenu(null);
 }
 
 app.on("ready", createWindow);
-
+app.setMe;
 app.on("window-all-closed", function () {
   if (process.platform !== "darwin") {
     app.quit();
