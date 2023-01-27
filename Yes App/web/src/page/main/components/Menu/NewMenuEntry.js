@@ -5,12 +5,30 @@ import InputView from "../InputView";
 import SelectView from "../SelectView";
 import DatePicker from "../DatePicker";
 import PurchaseTable from "./MenuTable";
+import { useEffect } from "react";
+import { collection, getDocs } from "firebase/firestore/lite";
+import { db } from "../../../../config/adminFirebase";
+import { addMenu } from "./functions/function";
 
 const NewMenuEntry = ({ isOpen, toggleModal }) => {
-  const [unit, setUnit] = React.useState();
-  const [itemName, setItemName] = React.useState();
-  const [isDateOpen, setDateIsOpen] = useState(false);
-
+  const [foodName, setFoodName] = useState("");
+  const [category, setCategory] = useState("");
+  const [price, setPrice] = useState("");
+  const [infoList, setInfoList] = useState("");
+  const [categoryList, setCategoryList] = useState([]);
+  const getAllData = async () => {
+    const doc1 = collection(db, "menuCategory");
+    const snap = await getDocs(doc1);
+    const arr = [];
+    snap.forEach((docs) => {
+      const data = docs.data()["category"];
+      arr.push(data);
+    });
+    setCategoryList(arr);
+  };
+  useEffect(() => {
+    getAllData();
+  }, []);
   return (
     <Modal
       isOpen={isOpen}
@@ -26,13 +44,11 @@ const NewMenuEntry = ({ isOpen, toggleModal }) => {
           <div className="ml-auto flex space-x-3">
             <button
               className="bg-green-700 text-white rounded p-2 px-5"
-              onClick={toggleModal}
-            >
-              Save & New
-            </button>
-            <button
-              className="bg-green-700 text-white rounded p-2 px-5"
-              onClick={toggleModal}
+              onClick={() => {
+                if (addMenu(foodName, category, infoList, price)) {
+                  toggleModal();
+                }
+              }}
             >
               Save
             </button>
@@ -46,20 +62,25 @@ const NewMenuEntry = ({ isOpen, toggleModal }) => {
         </div>
         <div className="mt-5 flex space-x-2 flex-wrap">
           <div className="flex-1">
-            <InputView label={"Food Name"} />
+            <InputView setValue={setFoodName} label={"Food Name"} />
           </div>
           <div className="flex-1">
             <SelectView
+              setValue={setCategory}
               label={"Category"}
-              data={["Data 1", "Data 2", "Data 3", "Data 4"]}
+              data={categoryList}
             />
           </div>
-          <div className="flex-1"></div>
+          <div className="flex-1">
+            <div className="flex-1">
+              <InputView setValue={setPrice} label={"Price"} />
+            </div>
+          </div>
           <div className="flex-1"></div>
         </div>
 
         <div className="my-3 mt-7">
-          <PurchaseTable />
+          <PurchaseTable setValue={setInfoList} />
         </div>
       </div>
     </Modal>

@@ -3,7 +3,6 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "./config/adminFirebase";
 import AuthRouter from "./router/AuthRouter";
 import MainRouter from "./router/MainRouter";
-import null
 
 const App = () => {
   const [userState, setUserState] = useState(0);

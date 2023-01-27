@@ -4,11 +4,29 @@ import { IoClose } from "react-icons/io5";
 import InputView from "../InputView";
 import SelectView from "../SelectView";
 import { addNewEntry } from "./functions/function";
+import { useEffect } from "react";
+import { collection, doc, getDocs } from "firebase/firestore/lite";
+import { db } from "../../../../config/adminFirebase";
 
 const ModalViewNewEntry = ({ isOpen, toggleModal, setIsOpen }) => {
   const [unit, setUnit] = React.useState();
   const [itemName, setItemName] = React.useState();
   const [category, setCategory] = React.useState("Beverages");
+  const [categoryList, setCategoryList] = React.useState([]);
+  const getAllData = async () => {
+    const doc1 = collection(db, "menuCategory");
+    const snap = await getDocs(doc1);
+    const arr = [];
+    snap.forEach((docs) => {
+      const data = docs.data()["category"];
+      arr.push(data);
+    });
+    setCategoryList(arr);
+    console.log(arr);
+  };
+  useEffect(() => {
+    getAllData();
+  }, []);
   return (
     <Modal
       isOpen={isOpen}
@@ -27,7 +45,7 @@ const ModalViewNewEntry = ({ isOpen, toggleModal, setIsOpen }) => {
         <div className="mt-5">
           <SelectView
             label={"Category"}
-            data={["Beverages", "Snacks", "Breakfast"]}
+            data={categoryList}
             setValue={setCategory}
           />
           <div className="my-4">
