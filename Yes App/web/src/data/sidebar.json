@@ -1,3 +1,4 @@
 {
-    "tab":[["Dashboard","/"],["Menu","/menu"],["Rooms","/room"],["Restaurant","/restaurant"],["Kitchen","/kitchen"],["Stock Management","/stockmanagement"],["Housekeeping","housekeeping"],["Finance Report","/finance"],["Employees","/employees"],["Manage User","/manageuser"],["Assets & Expense","/history"],["Vendors","/vendor"],["Setting","/setting"]]
+    "tab":[["Dashboard","/"],["Menu","/menu"],["Rooms","/room"],["Restaurant","/restaurant"],["Stock Management","/stockmanagement"],["Housekeeping","housekeeping"],["Finance Report","/finance"],["Assets","/assetandexpenses"],["Vendors","/vendor"],["Setting","/setting"]],
+    "secondary":[["Dashboard","/"],["View Menu","/menu"],["Book Room","/room"],["Order","/restaurant"],["Housekeeping","housekeeping"],["Setting","/setting"]]
 }

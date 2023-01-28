@@ -3,6 +3,7 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "./config/adminFirebase";
 import AuthRouter from "./router/AuthRouter";
 import MainRouter from "./router/MainRouter";
+import { UserContext } from "./contexts/context";
 
 const App = () => {
   const [userState, setUserState] = useState(0);
@@ -22,7 +23,11 @@ const App = () => {
   } else if (userState == 1) {
     return <AuthRouter />;
   } else {
-    return <MainRouter />;
+    return (
+      <UserContext.Provider value={{ admin: false }}>
+        <MainRouter />
+      </UserContext.Provider>
+    );
   }
 };
 

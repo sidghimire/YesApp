@@ -13,3 +13,4 @@ export { default as Restaurant } from "./Restaurant";
 export { default as Vendor } from "./Vendor";
 export { default as VendorInfo } from "./VendorInfo";
 export { default as BillPage } from "./BillPage";
+export { default as AssetAndExpenses } from "./AssetAndExpenses";
