@@ -6,6 +6,7 @@ import { useEffect } from "react";
 import DataFrame from "./components/Menu/DataFrame";
 import { collection, doc, getDocs } from "firebase/firestore/lite";
 import { db } from "../../config/adminFirebase";
+import { extreSmallFont, largeFont } from "../../theme";
 
 let data = [
   { productId: 10248, productName: "VINET", quantity: 190 },
@@ -45,17 +46,24 @@ const Menu = () => {
     <ModalProvider>
       <div className="w-full h-full">
         <div className="p-8">
-          <div className="text-2xl tracking-tighter">Manage Menu</div>
+          <div
+            className="text-2xl tracking-tighter"
+            style={{ fontSize: largeFont }}
+          >
+            Manage Menu
+          </div>
           <div className="flex flex-row">
             <button
               onClick={toggleModal3}
-              className="rounded-xl border bg-green-700 text-white text-sm py-2 px-8 mt-10 mx-4"
+              className="rounded-xl border bg-green-700 text-white text-sm py-1 px-8 mt-10 mx-4"
+              style={{ fontSize: extreSmallFont }}
             >
               New Entry
             </button>
             <button
               onClick={toggleModal2}
-              className="rounded-xl border border-green-700 text-green-700 text-sm py-2 px-8 mt-10 mx-4"
+              className="rounded-xl border border-green-700 text-green-700 text-sm py-1 px-8 mt-10 mx-4"
+              style={{ fontSize: extreSmallFont }}
             >
               New Category
             </button>

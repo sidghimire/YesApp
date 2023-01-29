@@ -1,6 +1,7 @@
 import React from "react";
 import { IoEllipsisVertical } from "react-icons/io5";
 import { getTableList } from "./functions/function";
+import { extreSmallFont, mediumFont } from "../../../../theme";
 
 export const RestaurantTab = () => {
   const [tableData, setTableData] = React.useState([]);
@@ -26,11 +27,16 @@ export const RestaurantTab = () => {
 
 export const RestaurantCard = ({ item }) => {
   return (
-    <div className="bg-gray-200 w-44 h-44 rounded-2xl flex flex-col p-4">
+    <div className="bg-gray-200 w-24 h-24 rounded-2xl flex flex-col p-4">
       <div className="ml-auto">
-        <IoEllipsisVertical />
+        <IoEllipsisVertical size={12} />
       </div>
-      <div className="text-2xl text-center my-auto">{item.tableNumber}</div>
+      <div
+        className="text-2xl text-center my-auto"
+        style={{ fontSize: mediumFont }}
+      >
+        {item.tableNumber}
+      </div>
     </div>
   );
 };

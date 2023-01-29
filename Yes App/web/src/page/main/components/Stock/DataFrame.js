@@ -1,10 +1,14 @@
 import React from "react";
 import { IoChevronDown } from "react-icons/io5";
+import { extreSmallFont, smallFont } from "../../../../theme";
 
 const DataFrame = ({ data, title }) => {
   return (
     <div className="w-full border border-gray-300 flex flex-col">
-      <div className="w-full bg-gray-300 p-2" style={{ display: "flex" }}>
+      <div
+        className="w-full bg-gray-300 p-2"
+        style={{ display: "flex", fontSize: smallFont }}
+      >
         <div className="w-24">S.N.</div>
         {title.map((t) => (
           <div className="flex-1 text-center">{t}</div>

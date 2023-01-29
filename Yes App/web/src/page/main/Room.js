@@ -3,6 +3,7 @@ import { RoomTab } from "./components/Room/RoomTab";
 import { ModalProvider } from "styled-react-modal";
 
 import ModalView from "./components/Room/ModalView";
+import { extreSmallFont, largeFont } from "../../theme";
 
 const roomdata = [
   {
@@ -56,10 +57,16 @@ const Room = () => {
     <ModalProvider>
       <div className="w-full h-full">
         <div className="p-8">
-          <div className="text-2xl tracking-tighter">Manage Rooms</div>
+          <div
+            className="text-2xl tracking-tighter"
+            style={{ fontSize: largeFont }}
+          >
+            Manage Rooms
+          </div>
           <button
             onClick={toggleModal}
-            className="rounded-xl bg-blue-800 text-white text-sm py-2 px-8 mt-10 mx-4"
+            className="rounded-xl bg-blue-800 text-white text-sm py-1 px-8 mt-10 mx-4"
+            style={{ fontSize: extreSmallFont }}
           >
             Add New Room
           </button>

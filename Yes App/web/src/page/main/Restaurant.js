@@ -1,52 +1,8 @@
 import React, { useState } from "react";
-import { RoomTab } from "./components/Room/RoomTab";
 import { ModalProvider } from "styled-react-modal";
-
 import ModalView from "./components/Restaurant/ModalView";
 import { RestaurantTab } from "./components/Restaurant/RestaurantTab";
-
-const roomdata = [
-  {
-    roomNumber: 1,
-    roomType: "premium",
-    price: 2400,
-  },
-  {
-    roomNumber: 2,
-    roomType: "regular",
-    price: 2000,
-  },
-  {
-    roomNumber: 3,
-    roomType: "regular",
-    price: 2000,
-  },
-  {
-    roomNumber: 4,
-    roomType: "premium",
-    price: 2400,
-  },
-  {
-    roomNumber: 1,
-    roomType: "premium",
-    price: 2400,
-  },
-  {
-    roomNumber: 2,
-    roomType: "regular",
-    price: 2000,
-  },
-  {
-    roomNumber: 3,
-    roomType: "regular",
-    price: 2000,
-  },
-  {
-    roomNumber: 4,
-    roomType: "premium",
-    price: 2400,
-  },
-];
+import { extreSmallFont, largeFont } from "../../theme";
 
 const Restaurant = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -57,10 +13,16 @@ const Restaurant = () => {
     <ModalProvider>
       <div className="w-full h-full">
         <div className="p-8">
-          <div className="text-2xl tracking-tighter">Manage Table</div>
+          <div
+            className="text-2xl tracking-tighter"
+            style={{ fontSize: largeFont }}
+          >
+            Manage Table
+          </div>
           <button
             onClick={toggleModal}
-            className="rounded-xl bg-blue-800 text-white text-sm py-2 px-8 mt-10 mx-4"
+            className="rounded-xl bg-blue-800 text-white text-sm py-1 px-6 mt-10 mx-4"
+            style={{ fontSize: extreSmallFont }}
           >
             Add New Table
           </button>

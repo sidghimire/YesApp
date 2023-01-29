@@ -3,7 +3,7 @@ import sidebar from "../../data/sidebar.json";
 import { Link } from "react-router-dom";
 import { signOutFromAccount } from "../Authentication/functions/function";
 import { UserContext } from "../../contexts/context";
-import { useState } from "react";
+import { extreSmallFont, largeFont, mediumFont, smallFont } from "../../theme";
 
 const Sidebar = () => {
   const value = React.useContext(UserContext).admin;
@@ -17,7 +17,10 @@ const Sidebar = () => {
           <>
             {sidebar.tab.map((val) => (
               <Link to={val[1]}>
-                <div className=" mx-4 rounded-xl px-3 py-4 text-sm hover:bg-gray-300 tracking-tighter text-gray-700">
+                <div
+                  className=" mx-4 rounded-xl px-3 py-3 hover:bg-gray-300 tracking-tighter text-gray-700"
+                  style={{ fontSize: extreSmallFont }}
+                >
                   {val[0]}
                 </div>
               </Link>
@@ -27,7 +30,10 @@ const Sidebar = () => {
           <>
             {sidebar.secondary.map((val) => (
               <Link to={val[1]}>
-                <div className=" mx-4 rounded-xl px-3 py-4 text-sm hover:bg-gray-300 tracking-tighter text-gray-700">
+                <div
+                  className=" mx-4 rounded-xl px-3 py-3 text-sm hover:bg-gray-300 tracking-tighter text-gray-700"
+                  style={{ fontSize: extreSmallFont }}
+                >
                   {val[0]}
                 </div>
               </Link>
@@ -35,7 +41,10 @@ const Sidebar = () => {
           </>
         )}
         <button className="w-full" onClick={() => signOutFromAccount()}>
-          <div className=" mx-4 rounded-xl px-3 py-4 text-sm hover:bg-red-800 bg-red-700 tracking-tighter text-white mt-10">
+          <div
+            className=" mx-4 rounded-xl px-2 py-2 text-sm hover:bg-red-800 bg-red-700 tracking-tighter text-white mt-5"
+            style={{ fontSize: extreSmallFont }}
+          >
             Logout
           </div>
         </button>

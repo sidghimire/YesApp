@@ -4,6 +4,7 @@ import { auth } from "./config/adminFirebase";
 import AuthRouter from "./router/AuthRouter";
 import MainRouter from "./router/MainRouter";
 import { UserContext } from "./contexts/context";
+import "./App.css";
 
 const App = () => {
   const [userState, setUserState] = useState(0);
@@ -24,7 +25,9 @@ const App = () => {
     return <AuthRouter />;
   } else {
     return (
-      <UserContext.Provider value={{ admin: false }}>
+      <UserContext.Provider
+        value={{ admin: false, smallFont: 10, mediumFont: 14, largeFont: 18 }}
+      >
         <MainRouter />
       </UserContext.Provider>
     );

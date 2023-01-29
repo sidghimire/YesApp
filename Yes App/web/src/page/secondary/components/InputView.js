@@ -1,9 +1,10 @@
 import React from "react";
+import { extreSmallFont, smallFont } from "../../../theme";
 
 const InputView = ({ label, setValue, value }) => {
   return (
-    <>
-      <label htmlFor="" className="text-gray-600" style={{ fontSize: 12 }}>
+    <div className="flex flex-col w-full">
+      <label htmlFor="" className="text-gray-600" style={{ fontSize: 8 }}>
         {label}
       </label>
       <input
@@ -12,11 +13,11 @@ const InputView = ({ label, setValue, value }) => {
         placeholder={label}
         type="text"
         className="p-2 border border-gray-400 rounded w-full"
-        style={{ fontSize: 14 }}
+        style={{ fontSize: 10 }}
         name=""
         id=""
       />
-    </>
+    </div>
   );
 };
 

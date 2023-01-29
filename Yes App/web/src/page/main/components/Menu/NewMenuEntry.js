@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { collection, getDocs } from "firebase/firestore/lite";
 import { db } from "../../../../config/adminFirebase";
 import { addMenu } from "./functions/function";
+import { extreSmallFont } from "../../../../theme";
 
 const NewMenuEntry = ({ isOpen, toggleModal }) => {
   const [foodName, setFoodName] = useState("");
@@ -43,7 +44,8 @@ const NewMenuEntry = ({ isOpen, toggleModal }) => {
           <span className="text-xl tracking-tighter">Menu Entry</span>
           <div className="ml-auto flex space-x-3">
             <button
-              className="bg-green-700 text-white rounded p-2 px-5"
+              className="bg-green-700 text-white rounded p-1 px-5"
+              style={{ fontSize: extreSmallFont }}
               onClick={() => {
                 if (addMenu(foodName, category, infoList, price)) {
                   toggleModal();
@@ -54,6 +56,7 @@ const NewMenuEntry = ({ isOpen, toggleModal }) => {
             </button>
             <button
               className="bg-gray-300 rounded p-2 px-5"
+              style={{ fontSize: extreSmallFont }}
               onClick={toggleModal}
             >
               Cancel
