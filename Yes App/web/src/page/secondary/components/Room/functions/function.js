@@ -1,4 +1,5 @@
-import { auth, db } from "../../../../../config/adminFirebase";
+import { child, get, ref, remove } from "firebase/database";
+import { auth, database, db } from "../../../../../config/adminFirebase";
 import {
   doc,
   addDoc,
@@ -9,56 +10,67 @@ import {
   query,
   where,
 } from "firebase/firestore/lite";
+import { set } from "firebase/database";
+import { async } from "@firebase/util";
 
 export const getRoomList = async function () {
-  const occupied = [];
-  const date = new Date().toISOString().split("T")[0];
-  const doc2 = collection(db, "bookedRoom", date, "record");
-  const q1 = query(doc2, where("status", "==", "Booked"));
-  const snap2 = await getDocs(q1);
+  const realRef = ref(database);
   const arr2 = [];
-  snap2.forEach((docs) => {
-    const data = docs.data();
-    occupied.push(data.roomNumber);
-    arr2.push(data);
-  });
-  arr2.sort(function (a, b) {
-    return a.roomNumber - b.roomNumber;
-  });
-  const q2 = query(doc2, where("status", "==", "Reserved"));
-  const snap3 = await getDocs(q2);
   const arr3 = [];
-  snap3.forEach((docs) => {
-    const data = docs.data();
-    occupied.push(data.roomNumber);
-    arr3.push(data);
-  });
-  arr3.sort(function (a, b) {
-    return a.roomNumber - b.roomNumber;
-  });
-
-  const doc1 = collection(db, "roomList");
-  var q3;
-  var snap;
-  if (occupied.length != 0) {
-    q3 = query(doc1, where("roomNumber", "not-in", occupied));
-    snap = await getDocs(q3);
-  } else {
-    snap = await getDocs(doc1);
-  }
   const arr = [];
+  const filterRoom = [];
+  await get(child(realRef, `liveReserve/`)).then(async (snapshot) => {
+    if (snapshot.exists()) {
+      const keys = Object.keys(snapshot.val());
+      const iterator = keys.values();
+      for (var key of iterator) {
+        await get(child(realRef, `liveReserve/` + key)).then((snapshot) => {
+          if (snapshot.exists()) {
+            arr2.push(snapshot.val());
+            filterRoom.push(snapshot.val().roomNumber);
+          }
+        });
+      }
+    }
+  });
+  await get(child(realRef, `liveBooking/`)).then(async (snapshot) => {
+    if (snapshot.exists()) {
+      const keys = Object.keys(snapshot.val());
+      const iterator = keys.values();
+      for (var key of iterator) {
+        await get(child(realRef, `liveBooking/` + key)).then((snapshot) => {
+          if (snapshot.exists()) {
+            arr3.push(snapshot.val());
+            filterRoom.push(snapshot.val().roomNumber);
+          }
+        });
+      }
+    }
+  });
+  if (filterRoom.length == 0) {
+    filterRoom.push("");
+  }
+  const doc1 = collection(db, "roomList");
+  const q = query(doc1, where("roomNumber", "not-in", filterRoom));
+  const snap = await getDocs(q);
   snap.forEach((docs) => {
     const data = docs.data();
     arr.push(data);
   });
-  arr.sort(function (a, b) {
-    return a.roomNumber - b.roomNumber;
-  });
-  return { arr, arr2, arr3 };
+
+  return { arr, arr3, arr2 };
 };
 
 export const addData = async function (form) {
-  const date = new Date().toISOString().split("T")[0];
-  const doc1 = collection(db, "bookedRoom", date, "record");
-  const snap = await addDoc(doc1, form);
+  const ref1 = ref(database, "liveReserve/reserve" + form.roomNumber);
+  await set(ref1, form);
+};
+export const checkIn = async function (form) {
+  const location = "liveBooking/checkIn" + form.roomNumber;
+  const ref1 = ref(database, location);
+  await set(ref1, form);
+  try {
+    const ref1 = ref(database, "liveReserve/reserve" + form.roomNumber);
+    await remove(ref1);
+  } catch {}
 };

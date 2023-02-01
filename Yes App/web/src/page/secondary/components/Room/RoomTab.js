@@ -35,16 +35,10 @@ export const RoomTab = ({ available, booked, reserved }) => {
               />
             </div>
           ))}
-        </div>
-      </div>
-      <div className="flex flex-col flex-wrap ">
-        <div className=" pb-0 text-xl" style={{ fontSize: 12 }}>
-          Reserved Room
-        </div>
-        <div className="flex">
           {reserved.map((item) => (
             <div className="p-4">
               <RoomCardReserved
+                state={item}
                 item={item}
                 setState={setRoomInfo}
                 setIsOpen={setIsOpen}
@@ -53,16 +47,10 @@ export const RoomTab = ({ available, booked, reserved }) => {
               />
             </div>
           ))}
-        </div>
-      </div>
-      <div className="flex flex-col flex-wrap ">
-        <div className=" pb-0 mt-2 text-xl" style={{ fontSize: 12 }}>
-          Booked Room
-        </div>
-        <div className="flex">
           {booked.map((item) => (
             <div className="p-4">
               <RoomCardBooked
+                state={item}
                 item={item}
                 setState={setRoomInfo}
                 setIsOpen={setIsOpen}
@@ -133,6 +121,7 @@ export const RoomCardReserved = ({
   isOpen,
   setType,
 }) => {
+  console.log(item);
   return (
     <button
       onClick={() => {

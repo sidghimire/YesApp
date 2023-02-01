@@ -4,7 +4,10 @@ import {
   addOrderData,
   getCategoryItem,
   getMenuItem,
+  updateOrderData,
 } from "./functions/function";
+import AddToRoomModal from "./components/AddToRoomModal";
+import { Link } from "react-router-dom";
 
 const EntryRow = ({
   data,
@@ -28,14 +31,16 @@ const EntryRow = ({
   };
   useEffect(() => {
     getAllData();
+    getTotal(numRows, setTotal);
   }, []);
-  const getTotal = (temp) => {
+  const getTotal = (temp, setTotal) => {
     let sum = 0;
     for (let i = 0; i < temp.length; i++) {
       sum = sum + parseInt(temp[i][2]);
     }
     setTotal(sum);
   };
+
   const addValue = function (val, field) {
     var value;
 
@@ -52,7 +57,7 @@ const EntryRow = ({
     }
     temp[index][2] = value * temp[index][1];
     setNumRows(temp);
-    getTotal(temp);
+    getTotal(temp, setTotal);
   };
   return (
     <div className="flex ">
@@ -66,6 +71,7 @@ const EntryRow = ({
         </span>
       </button>
       <select
+        value={numRows[index][0]}
         onChange={(e) => {
           setName(e.target.value);
 
@@ -103,12 +109,13 @@ const EntryRow = ({
   );
 };
 
-const OrderTable = ({ setValue, total, setTotal, state, guests }) => {
-  const [numRows, setNumRows] = useState([["", 1, ""]]);
+const UpdateOrder = ({ setValue, total, setTotal, state, guests }) => {
+  const [numRows, setNumRows] = useState(JSON.parse(state.form.menuData));
+  const [isOpen, setIsOpen] = useState(false);
 
   const addNewRow = () => {
     const arr = numRows;
-    arr.push(["", 1, ""]);
+    arr.push(["", 1, 0]);
     setNumRows([...arr]);
   };
   const getTotal = (temp, setTotal) => {
@@ -116,6 +123,7 @@ const OrderTable = ({ setValue, total, setTotal, state, guests }) => {
     for (let i = 0; i < temp.length; i++) {
       sum = sum + parseInt(temp[i][2]);
     }
+    console.log(sum);
     setTotal(sum);
   };
   function removeRow(n) {
@@ -175,23 +183,49 @@ const OrderTable = ({ setValue, total, setTotal, state, guests }) => {
           Total: {total}
         </div>
       </div>
-      <button
-        onClick={() => {
-          addOrderData({
-            menuData: JSON.stringify(numRows),
-            tableNumber: state.tableNumber,
-            total: total,
-            guests: guests,
-            date: new Date(),
-          });
-        }}
-        className="rounded-xl bg-green-700 text-white w-full p-3 mt-5 "
-        style={{ fontSize: 10 }}
-      >
-        Create Order
-      </button>
+      <div className="flex space-x-4">
+        <button
+          onClick={() => {
+            updateOrderData({
+              menuData: numRows,
+              tableNumber: state.form.tableNumber,
+              total: total,
+              guests: guests,
+              state: state,
+            });
+          }}
+          className="rounded-xl bg-green-700 text-white w-full p-3 mt-5 "
+          style={{ fontSize: 10 }}
+        >
+          Update Order
+        </button>
+        <button
+          onClick={() => {
+            setIsOpen(!isOpen);
+          }}
+          className="rounded-xl bg-blue-700 text-white w-full p-3 mt-5 "
+          style={{ fontSize: 10 }}
+        >
+          Add To Room
+        </button>
+
+        <Link
+          to="/restaurant/checkout"
+          state={{ tableNumber: state.form.tableNumber }}
+          className="rounded-xl bg-red-700 text-white w-full p-3 mt-5 text-center"
+          style={{ fontSize: 10 }}
+        >
+          Check Out
+        </Link>
+      </div>
+      <AddToRoomModal
+        tableNumber={state.form.tableNumber}
+        orderInfo={numRows}
+        isOpen={isOpen}
+        setIsOpen={setIsOpen}
+      />
     </div>
   );
 };
 
-export default OrderTable;
+export default UpdateOrder;

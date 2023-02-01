@@ -9,11 +9,19 @@ import { useState } from "react";
 import { addData, addOrderData } from "./functions/function";
 import { auth } from "../../../../config/adminFirebase";
 import OrderTable from "./OrderTable";
+import { useEffect } from "react";
+import UpdateOrder from "./UpdateOrder";
 
-const ModalView = ({ isOpen, setIsOpen, toggleModal, state }) => {
+const OccupiedModalView = ({ isOpen, setIsOpen, toggleModal, state }) => {
   const [total, setTotal] = useState();
   const [value, setValue] = useState();
   const [guests, setGuests] = useState();
+  const fixData = () => {
+    setGuests(state.form ? state.form.guests : "");
+  };
+  useEffect(() => {
+    fixData();
+  }, []);
   return (
     <Modal
       isOpen={isOpen}
@@ -30,20 +38,24 @@ const ModalView = ({ isOpen, setIsOpen, toggleModal, state }) => {
               className="text-2xl text-center my-auto"
               style={{ fontSize: 12 }}
             >
-              {state.tableNumber}
+              {state.form ? state.form.tableNumber : ""}
             </div>
           </div>
           <div className=" px-5 w-full">
-            <InputView label={"No. of Guests"} setValue={setGuests} />
+            <InputView
+              label={"No. of Guests"}
+              value={guests}
+              setValue={setGuests}
+            />
           </div>
         </div>
         <div className="px-3 py-4">
-          <OrderTable
+          <UpdateOrder
+            state={state}
             total={total}
             setTotal={setTotal}
             setValue={setValue}
             guests={guests}
-            state={state}
           />
         </div>
       </div>
@@ -51,4 +63,4 @@ const ModalView = ({ isOpen, setIsOpen, toggleModal, state }) => {
   );
 };
 
-export default ModalView;
+export default OccupiedModalView;

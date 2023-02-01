@@ -13,8 +13,8 @@ const Room = () => {
   const getAllData = async () => {
     const arr = await getRoomList();
     setAvailable(arr.arr);
-    setBooked(arr.arr2);
-    setReserved(arr.arr3);
+    setBooked(arr.arr3);
+    setReserved(arr.arr2);
   };
 
   useEffect(() => {

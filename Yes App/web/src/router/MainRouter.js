@@ -56,6 +56,10 @@ const MainRouter = () => {
                 <Route path="/dashboard" element={<LowPage.Dashboard />} />
                 <Route path="/room" element={<LowPage.Room />} />
                 <Route path="/restaurant" element={<LowPage.Restaurant />} />
+                <Route
+                  path="/restaurant/checkout"
+                  element={<LowPage.Checkout />}
+                />
 
                 <Route
                   path="/housekeeping"

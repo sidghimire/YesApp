@@ -6,9 +6,8 @@ import SelectView from "../SelectView";
 import { extreSmallFont, smallFont } from "../../../../theme";
 import DatePicker from "../../../../components/DatePicker";
 import { useState } from "react";
-import { addData } from "./functions/function";
+import { addData, checkIn } from "./functions/function";
 import { auth } from "../../../../config/adminFirebase";
-
 const RoomSmallTab = ({ state }) => {
   return (
     <div className="border border-gray-500 w-44 h-44 rounded-2xl flex flex-col p-4 mx-auto">
@@ -200,7 +199,7 @@ const ModalView = ({ isOpen, setIsOpen, toggleModal, state, type }) => {
             <div className="flex flex-row space-x-4">
               <button
                 onClick={() =>
-                  addData({
+                  checkIn({
                     customerName,
                     phoneNumber,
                     nationality,
@@ -275,8 +274,9 @@ const ModalView = ({ isOpen, setIsOpen, toggleModal, state, type }) => {
           {type == "Reserve" && (
             <div className="flex flex-row space-x-4">
               <button
-                onClick={() =>
-                  addData({
+                onClick={() => {
+                  console.log(state);
+                  checkIn({
                     customerName,
                     phoneNumber,
                     nationality,
@@ -298,13 +298,14 @@ const ModalView = ({ isOpen, setIsOpen, toggleModal, state, type }) => {
                     roomRateType,
                     noOfGuests,
                     roomNumber: state.roomNumber,
-                    roomType: state.type,
-                    roomOriginalPrice: state.price,
-                    discount: state.price - roomRate,
+                    roomType: state.roomType,
+                    roomOriginalPrice: state.roomOriginalPrice,
+                    discount: state.roomOriginalPrice - roomRate,
                     status: "Booked",
                     uploadedBy: auth.currentUser.uid,
-                  })
-                }
+                    date: new Date(),
+                  });
+                }}
                 style={{ fontSize: smallFont }}
                 className="bg-green-700 p-2 text-white rounded-xl w-full mt-8 flex-1"
               >
@@ -320,42 +321,6 @@ const ModalView = ({ isOpen, setIsOpen, toggleModal, state, type }) => {
           )}
           {type == "Booked" && (
             <div className="flex flex-row space-x-4">
-              <button
-                onClick={() =>
-                  addData({
-                    customerName,
-                    phoneNumber,
-                    nationality,
-                    idNo,
-                    address,
-                    email,
-                    checkInDate,
-                    checkOutDate,
-                    noOfNights,
-                    arrivedFrom,
-                    goingTo,
-                    purpose,
-                    occupation,
-                    method,
-                    billNo,
-                    vehicleNo,
-                    roomRate,
-                    advance,
-                    roomRateType,
-                    noOfGuests,
-                    roomNumber: state.roomNumber,
-                    roomType: state.type,
-                    roomOriginalPrice: state.price,
-                    discount: state.price - roomRate,
-                    status: "Booked",
-                    uploadedBy: auth.currentUser.uid,
-                  })
-                }
-                style={{ fontSize: smallFont }}
-                className="bg-green-700 p-2 text-white rounded-xl w-full mt-8 flex-1"
-              >
-                Check In
-              </button>
               <button
                 style={{ fontSize: smallFont }}
                 className="border border-red-500 bg-red-200 p-2 text-red-800 rounded-xl w-full mt-8 flex-1"

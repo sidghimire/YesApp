@@ -4,9 +4,11 @@ import { useState } from "react";
 import { getTableList } from "./components/Restaurant/functions/function";
 import { TabData } from "./components/Restaurant/TabData";
 import { ModalProvider } from "styled-react-modal";
+import { OccupiedTab } from "./components/Restaurant/OccupiedTab";
 
 const Restaurant = () => {
   const [tableData, setTableData] = useState([]);
+  const [occupiedTable, setOccupiedTable] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedTable, setSelectedTable] = useState();
   const toggleModal = () => {
@@ -14,7 +16,8 @@ const Restaurant = () => {
   };
   const getTableData = async () => {
     const arr = await getTableList();
-    setTableData(arr);
+    setOccupiedTable(arr.arr2);
+    setTableData(arr.arr);
   };
   useEffect(() => {
     getTableData();
@@ -25,6 +28,12 @@ const Restaurant = () => {
         <div className="text-base font-medium tracking-tighter mb-5">
           Restaurant Order
         </div>
+        <OccupiedTab
+          setSelectedTable={setSelectedTable}
+          toggleModal={toggleModal}
+          tableData={occupiedTable}
+        />
+        <div className="my-6"></div>
         <TabData
           setSelectedTable={setSelectedTable}
           toggleModal={toggleModal}

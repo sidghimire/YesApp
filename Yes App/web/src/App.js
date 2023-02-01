@@ -26,7 +26,7 @@ const App = () => {
   } else {
     return (
       <UserContext.Provider
-        value={{ admin: false, smallFont: 10, mediumFont: 14, largeFont: 18 }}
+        value={{ admin: true, smallFont: 10, mediumFont: 14, largeFont: 18 }}
       >
         <MainRouter />
       </UserContext.Provider>
