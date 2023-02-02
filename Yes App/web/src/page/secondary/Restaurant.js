@@ -11,6 +11,7 @@ const Restaurant = () => {
   const [occupiedTable, setOccupiedTable] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedTable, setSelectedTable] = useState();
+  const [rerender, setRerender] = useState(false);
   const toggleModal = () => {
     setIsOpen(!isOpen);
   };
@@ -21,7 +22,7 @@ const Restaurant = () => {
   };
   useEffect(() => {
     getTableData();
-  }, []);
+  }, [rerender]);
   return (
     <ModalProvider>
       <div className="p-5">
@@ -29,12 +30,16 @@ const Restaurant = () => {
           Restaurant Order
         </div>
         <OccupiedTab
+          rerender={rerender}
+          setRerender={setRerender}
           setSelectedTable={setSelectedTable}
           toggleModal={toggleModal}
           tableData={occupiedTable}
         />
         <div className="my-6"></div>
         <TabData
+          rerender={rerender}
+          setRerender={setRerender}
           setSelectedTable={setSelectedTable}
           toggleModal={toggleModal}
           tableData={tableData}

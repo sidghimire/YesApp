@@ -3,7 +3,7 @@ import { IoEllipsisVertical } from "react-icons/io5";
 import { getTableList } from "./functions/function";
 import { extreSmallFont, mediumFont } from "../../../../theme";
 
-export const RestaurantTab = () => {
+export const RestaurantTab = ({ rerender }) => {
   const [tableData, setTableData] = React.useState([]);
   const getAllData = async () => {
     const arr = await getTableList();
@@ -13,7 +13,7 @@ export const RestaurantTab = () => {
 
   React.useEffect(() => {
     getAllData();
-  }, []);
+  }, [rerender]);
   return (
     <div className="flex flex-row flex-wrap ">
       {tableData.map((item) => (

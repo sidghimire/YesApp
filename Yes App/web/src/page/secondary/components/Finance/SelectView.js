@@ -1,6 +1,6 @@
 import React from "react";
 
-const InputView = ({ label, setValue, value, required }) => {
+const SelectView = ({ label, data, setValue, required }) => {
   return (
     <div className="flex flex-col w-full">
       <div className="flex ">
@@ -15,18 +15,21 @@ const InputView = ({ label, setValue, value, required }) => {
           </>
         )}
       </div>
-      <input
-        onChange={(e) => setValue(e.target.value)}
-        value={value}
-        placeholder={value}
-        type="text"
-        className="p-2 border border-gray-400 rounded w-full"
+      <select
+        onChange={(e) => {
+          setValue(e.target.value);
+        }}
+        className="p-2 border border-gray-400 rounded w-full text-sm"
         style={{ fontSize: 10 }}
-        name=""
-        id=""
-      />
+      >
+        {data.map((d1) => (
+          <option className="capitalize" value={d1}>
+            {d1}
+          </option>
+        ))}
+      </select>
     </div>
   );
 };
 
-export default InputView;
+export default SelectView;

@@ -10,7 +10,7 @@ import { addData, addOrderData } from "./functions/function";
 import { auth } from "../../../../config/adminFirebase";
 import OrderTable from "./OrderTable";
 
-const ModalView = ({ isOpen, setIsOpen, toggleModal, state }) => {
+const ModalView = ({ isOpen, toggleModal, state, rerender, setRerender }) => {
   const [total, setTotal] = useState();
   const [value, setValue] = useState();
   const [guests, setGuests] = useState();
@@ -39,11 +39,14 @@ const ModalView = ({ isOpen, setIsOpen, toggleModal, state }) => {
         </div>
         <div className="px-3 py-4">
           <OrderTable
+            rerender={rerender}
+            setRerender={setRerender}
             total={total}
             setTotal={setTotal}
             setValue={setValue}
             guests={guests}
             state={state}
+            toggleModal={toggleModal}
           />
         </div>
       </div>

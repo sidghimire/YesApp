@@ -4,16 +4,7 @@ import { IoEllipsisVertical } from "react-icons/io5";
 import { getRoomList } from "./functions/function";
 import { extreSmallFont, largeFont } from "../../../../theme";
 
-export const RoomTab = () => {
-  const [roomdata, setRoomData] = useState([]);
-  const getAllData = async () => {
-    const arr = await getRoomList();
-    setRoomData(arr);
-  };
-
-  useEffect(() => {
-    getAllData();
-  }, []);
+export const RoomTab = ({ rerender, roomdata }) => {
   return (
     <div className="flex flex-row flex-wrap ">
       {roomdata.map((item) => (
@@ -27,7 +18,7 @@ export const RoomTab = () => {
 
 export const RoomCard = ({ item }) => {
   return (
-    <div className="bg-gray-200 w-32 rounded-2xl flex flex-col p-4">
+    <div className="bg-gray-200 w-44 h-44 rounded-2xl flex flex-col p-4">
       <div className="ml-auto">
         <IoEllipsisVertical size={12} />
       </div>

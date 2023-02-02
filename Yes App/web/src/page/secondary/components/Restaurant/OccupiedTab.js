@@ -4,7 +4,7 @@ import ModalView from "./ModalView";
 import { IoEllipsisVertical } from "react-icons/io5";
 import OccupiedModalView from "./OccupiedModalView";
 
-export const OccupiedTab = ({ tableData }) => {
+export const OccupiedTab = ({ tableData, rerender, setRerender }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [tableInfo, setTableInfo] = useState([]);
   const toggleModal = function () {
@@ -37,6 +37,8 @@ export const OccupiedTab = ({ tableData }) => {
       </div>
       {isOpen ? (
         <OccupiedModalView
+          rerender={rerender}
+          setRerender={setRerender}
           isOpen={isOpen}
           setIsOpen={setIsOpen}
           toggleModal={toggleModal}

@@ -25,10 +25,7 @@ const MainRouter = () => {
                 <Route path="/room" element={<TabPage.Room />} />
                 <Route path="/restaurant" element={<TabPage.Restaurant />} />
                 <Route path="/kitchen" element={<TabPage.Kitchen />} />
-                <Route
-                  path="/stockmanagement"
-                  element={<TabPage.StockManagement />}
-                />
+
                 <Route
                   path="/housekeeping"
                   element={<TabPage.HouseKeeping />}
@@ -39,6 +36,7 @@ const MainRouter = () => {
                 <Route path="/history" element={<TabPage.History />} />
                 <Route path="/setting" element={<TabPage.Setting />} />
                 <Route path="/vendor" element={<TabPage.Vendor />} />
+                <Route path="/dailyBook" element={<LowPage.DailyBook />} />
                 <Route
                   path="/assetandexpenses"
                   element={<TabPage.AssetAndExpenses />}
@@ -56,14 +54,34 @@ const MainRouter = () => {
                 <Route path="/dashboard" element={<LowPage.Dashboard />} />
                 <Route path="/room" element={<LowPage.Room />} />
                 <Route path="/restaurant" element={<LowPage.Restaurant />} />
+                <Route path="/finance" element={<LowPage.Finance />} />
+                <Route path="/dailyBook" element={<LowPage.DailyBook />} />
+                <Route
+                  path="/stockmanagement"
+                  element={<TabPage.StockManagement />}
+                />
                 <Route
                   path="/restaurant/checkout"
                   element={<LowPage.Checkout />}
+                />
+                <Route
+                  path="/room/checkout"
+                  element={<LowPage.CheckoutRoom />}
                 />
 
                 <Route
                   path="/housekeeping"
                   element={<LowPage.HouseKeeping />}
+                />
+                <Route path="/vendor" element={<TabPage.Vendor />} />
+                <Route
+                  path="/assetandexpenses"
+                  element={<TabPage.AssetAndExpenses />}
+                />
+                <Route path="/vendor/info" element={<TabPage.VendorInfo />} />
+                <Route
+                  path="/vendor/info/bill"
+                  element={<TabPage.BillPage />}
                 />
 
                 <Route path="/setting" element={<LowPage.Setting />} />

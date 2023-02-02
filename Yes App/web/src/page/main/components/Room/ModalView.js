@@ -6,11 +6,20 @@ import SelectView from "../SelectView";
 import { addRoom } from "./functions/function";
 import { auth } from "../../../../config/adminFirebase";
 import { extreSmallFont, largeFont } from "../../../../theme";
+import ErrorMessage from "../../../ErrorMessage";
+import { useState } from "react";
 
-const ModalView = ({ isOpen, setIsOpen, toggleModal }) => {
-  const [roomNumber, setRoomNumber] = React.useState();
-  const [price, setPrice] = React.useState();
-  const [roomType, setRoomType] = React.useState("Premium");
+const ModalView = ({
+  isOpen,
+  setIsOpen,
+  toggleModal,
+  setRerender,
+  rerender,
+}) => {
+  const [showError, setShowError] = useState(false);
+  const [roomNumber, setRoomNumber] = React.useState("");
+  const [price, setPrice] = React.useState("");
+  const [roomType, setRoomType] = React.useState("");
   return (
     <Modal
       isOpen={isOpen}
@@ -45,21 +54,37 @@ const ModalView = ({ isOpen, setIsOpen, toggleModal }) => {
           <div className="my-2">
             <SelectView
               label={"Room Type"}
-              data={["Premium", "Regular"]}
+              data={[
+                "",
+                "King Size",
+                "Double + Single Bed",
+                "3 Single Bed",
+                "2 Double Bed",
+                "2 Single Bed",
+              ]}
               setValue={setRoomType}
             />
           </div>
+          <ErrorMessage
+            show={showError}
+            message={"Please Fill All The Information"}
+          />
           <button
             onClick={() => {
-              if (addRoom(roomNumber, price, roomType)) {
-                setIsOpen(false);
-                setRoomNumber();
-                setPrice();
-                setRoomType("Premium");
+              if (roomNumber == "" || price == "" || roomType == "") {
+                setShowError(!showError);
+              } else {
+                if (addRoom(roomNumber, price, roomType)) {
+                  setIsOpen(false);
+                  setRoomNumber();
+                  setPrice();
+                  setRoomType("");
+                  setRerender(!rerender);
+                }
               }
             }}
             className="bg-green-700 p-3 text-white rounded-xl w-full mt-5"
-            style={{ fontSize: extreSmallFont }}
+            style={{ fontSize: 14 }}
           >
             Submit
           </button>

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import ModalView from "./ModalView";
 import { IoEllipsisVertical } from "react-icons/io5";
 
-export const TabData = ({ tableData }) => {
+export const TabData = ({ tableData, rerender, setRerender }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [tableInfo, setTableInfo] = useState([]);
   const toggleModal = function () {
@@ -35,6 +35,8 @@ export const TabData = ({ tableData }) => {
         ))}
       </div>
       <ModalView
+        rerender={rerender}
+        setRerender={setRerender}
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         toggleModal={toggleModal}

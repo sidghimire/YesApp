@@ -4,10 +4,17 @@ import { IoClose } from "react-icons/io5";
 import InputView from "../InputView";
 import { addTable } from "./functions/function";
 import { extreSmallFont, largeFont } from "../../../../theme";
-
-const ModalView = ({ isOpen, toggleModal, setIsOpen }) => {
-  const [tableNumber, setTableNumber] = React.useState();
-
+import ErrorMessage from "../../../ErrorMessage";
+import { useState } from "react";
+const ModalView = ({
+  isOpen,
+  toggleModal,
+  setIsOpen,
+  setRerender,
+  rerender,
+}) => {
+  const [tableNumber, setTableNumber] = React.useState("");
+  const [showError, setShowError] = useState(false);
   return (
     <Modal
       isOpen={isOpen}
@@ -36,12 +43,20 @@ const ModalView = ({ isOpen, toggleModal, setIsOpen }) => {
               setValue={setTableNumber}
             />
           </div>
-
+          <ErrorMessage
+            show={showError}
+            message={"Please FIll in All The Information"}
+          />
           <button
             onClick={() => {
-              if (addTable(tableNumber)) {
-                setIsOpen(false);
-                setTableNumber();
+              if (tableNumber == "") {
+                setShowError(true);
+              } else {
+                if (addTable(tableNumber)) {
+                  setIsOpen(false);
+                  setTableNumber();
+                  setRerender(!rerender);
+                }
               }
             }}
             className="bg-green-700 p-3 text-white rounded-xl w-full mt-5"

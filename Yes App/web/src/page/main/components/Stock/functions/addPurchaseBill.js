@@ -31,6 +31,22 @@ export const addPurchaseBill = async function (
     total,
     list: JSON.stringify(listInfo),
   });
+  const doc2 = collection(
+    db,
+    "dailyRecord",
+    new Date(billDate).toISOString().split("T")[0],
+    "record"
+  );
+  const snap2 = await addDoc(doc2, {
+    billNumber,
+    billDate,
+    dueDate,
+    billType,
+    vendorName,
+    invoiceNumber,
+    total,
+    list: JSON.stringify(listInfo),
+  });
   for (let i = 0; i < listInfo.length; i++) {
     const doc2 = collection(db, "itemList");
     const q = query(doc2, where("itemName", "==", listInfo[i][0]));

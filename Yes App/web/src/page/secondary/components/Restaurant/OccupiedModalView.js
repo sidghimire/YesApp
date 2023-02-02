@@ -12,7 +12,14 @@ import OrderTable from "./OrderTable";
 import { useEffect } from "react";
 import UpdateOrder from "./UpdateOrder";
 
-const OccupiedModalView = ({ isOpen, setIsOpen, toggleModal, state }) => {
+const OccupiedModalView = ({
+  isOpen,
+  setIsOpen,
+  toggleModal,
+  state,
+  rerender,
+  setRerender,
+}) => {
   const [total, setTotal] = useState();
   const [value, setValue] = useState();
   const [guests, setGuests] = useState();
@@ -51,6 +58,9 @@ const OccupiedModalView = ({ isOpen, setIsOpen, toggleModal, state }) => {
         </div>
         <div className="px-3 py-4">
           <UpdateOrder
+            rerender={rerender}
+            setRerender={setRerender}
+            toggleModal={toggleModal}
             state={state}
             total={total}
             setTotal={setTotal}

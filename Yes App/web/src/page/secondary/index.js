@@ -5,3 +5,6 @@ export { default as Menu } from "./Menu";
 export { default as Dashboard } from "./Dashboard";
 export { default as Setting } from "./Setting";
 export { default as Checkout } from "./components/Restaurant/Checkout";
+export { default as CheckoutRoom } from "./components/Room/Checkout";
+export { default as Finance } from "./Finance";
+export { default as DailyBook } from "./DailyBook";

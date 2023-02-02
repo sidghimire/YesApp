@@ -7,22 +7,25 @@ import { useState } from "react";
 import { largeFont } from "../../theme";
 
 const Room = () => {
+  const [rerender, setRerender] = useState(false);
   const [available, setAvailable] = useState([]);
   const [booked, setBooked] = useState([]);
   const [reserved, setReserved] = useState([]);
+  const [dirty, setDirty] = useState([]);
   const getAllData = async () => {
     const arr = await getRoomList();
     setAvailable(arr.arr);
     setBooked(arr.arr3);
     setReserved(arr.arr2);
+    setDirty(arr.arr4);
   };
 
   useEffect(() => {
     getAllData();
-  }, []);
+  }, [rerender]);
   return (
     <ModalProvider>
-      <div className="w-full h-full">
+      <div className="w-full h-full overflow-y-scroll">
         <div className="p-8">
           <div
             className="text-2xl tracking-tighter"
@@ -30,7 +33,14 @@ const Room = () => {
           >
             Book Room
           </div>
-          <RoomTab available={available} booked={booked} reserved={reserved} />
+          <RoomTab
+            rerender={rerender}
+            setRerender={setRerender}
+            available={available}
+            booked={booked}
+            reserved={reserved}
+            dirty={dirty}
+          />
         </div>
       </div>
     </ModalProvider>

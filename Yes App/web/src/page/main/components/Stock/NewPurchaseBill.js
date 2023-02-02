@@ -10,7 +10,7 @@ import { useEffect } from "react";
 
 const NewPurchaseBill = ({ isOpen, toggleModal }) => {
   const [billNumber, setBillNumber] = useState();
-  const [billDate, setBillDate] = useState("Select Date");
+  const [billDate, setBillDate] = useState(new Date().getTime());
   const [dueDate, setDueDate] = useState("Select Date");
   const [billType, setBillType] = useState("Sales");
   const [vendorName, setVendorName] = useState();
@@ -34,7 +34,6 @@ const NewPurchaseBill = ({ isOpen, toggleModal }) => {
     for (var i = 0; i < temp.length; i++) {
       arr.push(temp[i].vendorName);
     }
-    console.log(arr);
     setVendorList(arr);
   };
   useEffect(() => {

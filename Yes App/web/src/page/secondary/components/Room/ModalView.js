@@ -3,11 +3,13 @@ import Modal from "styled-react-modal";
 import { IoClose } from "react-icons/io5";
 import InputView from "../InputView";
 import SelectView from "../SelectView";
-import { extreSmallFont, smallFont } from "../../../../theme";
 import DatePicker from "../../../../components/DatePicker";
 import { useState } from "react";
 import { addData, checkIn } from "./functions/function";
 import { auth } from "../../../../config/adminFirebase";
+import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import ErrorMessage from "../../../ErrorMessage";
 const RoomSmallTab = ({ state }) => {
   return (
     <div className="border border-gray-500 w-44 h-44 rounded-2xl flex flex-col p-4 mx-auto">
@@ -35,28 +37,132 @@ const RoomSmallTab = ({ state }) => {
     </div>
   );
 };
-const ModalView = ({ isOpen, setIsOpen, toggleModal, state, type }) => {
-  const [customerName, setCustomerName] = React.useState("Girban");
-  const [phoneNumber, setPhoneNumber] = React.useState("9844442363");
-  const [nationality, setNationality] = React.useState("Nepali");
-  const [idNo, setIdNo] = useState("idNoisthis");
-  const [address, setAddress] = useState("Lubhu");
-  const [email, setEmail] = useState("siddharthaghimire@gmail.com");
-  const [checkInDate, setCheckInDate] = useState(new Date());
-  const [checkOutDate, setCheckOutDate] = useState(new Date());
-  const [noOfNights, setNoOfNights] = useState(2);
-  const [arrivedFrom, setArrivedFrom] = useState("kathmandu");
-  const [goingTo, setGoingTo] = useState("sarlahi");
-  const [purpose, setPurpose] = useState("tours");
-  const [occupation, setOccupation] = useState("businessman");
-  const [method, setMethod] = useState("cash");
-  const [billNo, setBillNo] = useState("bill No");
-  const [vehicleNo, setVehicleNo] = useState("Ba 234");
-  const [roomRate, setRoomRate] = useState(2300);
-  const [advance, setAdvance] = useState(1000);
-  const [roomRateType, setRoomRateType] = useState("FA");
-  const [noOfGuests, setNoOfGuests] = useState(2);
-
+const ModalView = ({
+  isOpen,
+  setIsOpen,
+  toggleModal,
+  state,
+  type,
+  rerender,
+  setRerender,
+}) => {
+  const [customerName, setCustomerName] = React.useState("");
+  const [phoneNumber, setPhoneNumber] = React.useState("");
+  const [nationality, setNationality] = React.useState("");
+  const [idNo, setIdNo] = useState("");
+  const [address, setAddress] = useState("");
+  const [email, setEmail] = useState("");
+  const [checkInDate, setCheckInDate] = useState(new Date().getTime());
+  const [checkOutDate, setCheckOutDate] = useState("");
+  const [noOfNights, setNoOfNights] = useState("");
+  const [arrivedFrom, setArrivedFrom] = useState("");
+  const [goingTo, setGoingTo] = useState("");
+  const [purpose, setPurpose] = useState("");
+  const [occupation, setOccupation] = useState("");
+  const [method, setMethod] = useState("");
+  const [billNo, setBillNo] = useState("");
+  const [vehicleNo, setVehicleNo] = useState("");
+  const [roomRate, setRoomRate] = useState("");
+  const [advance, setAdvance] = useState("");
+  const [roomRateType, setRoomRateType] = useState("EP");
+  const [noOfGuests, setNoOfGuests] = useState("");
+  const [showError, setShowError] = useState("");
+  const emptyField = () => {
+    setCustomerName("");
+    setPhoneNumber("");
+    setNationality("");
+    setIdNo("");
+    setAddress("");
+    setEmail("");
+    setNoOfNights("");
+    setNoOfGuests("");
+    setArrivedFrom("");
+    setGoingTo("");
+    setPurpose("");
+    setOccupation("");
+    setMethod("");
+    setBillNo("");
+    setVehicleNo("");
+    setRoomRate("");
+    setAdvance("");
+    setRoomRateType("");
+    setNoOfGuests("");
+    setCheckInDate("");
+    setCheckInDate("");
+  };
+  const changeData = () => {
+    if (type == "NewRoom") {
+      emptyField();
+    } else {
+      setCustomerName(state.customerName);
+      setPhoneNumber(state.phoneNumber);
+      setNationality(state.nationality);
+      setIdNo(state.idNo);
+      setAddress(state.address);
+      setEmail(state.email);
+      setNoOfNights(state.noOfNights);
+      setNoOfGuests(state.noOfGuests);
+      setArrivedFrom(state.arrivedFrom);
+      setGoingTo(state.goingTo);
+      setPurpose(state.purpose);
+      setOccupation(state.occupation);
+      setMethod(state.method);
+      setBillNo(state.billNo);
+      setVehicleNo(state.vehicleNo);
+      setRoomRate(state.roomRate);
+      setAdvance(state.advance);
+      setRoomRateType(state.roomRateType);
+      setNoOfGuests(state.noOfGuests);
+      setCheckInDate(new Date(state.checkInDate).getTime());
+      setCheckOutDate(new Date(state.checkOutDate).getTime());
+    }
+  };
+  const validateData = () => {
+    console.log(
+      customerName == "" ||
+        phoneNumber == "" ||
+        address == "" ||
+        email == "" ||
+        checkInDate == "" ||
+        checkOutDate == "" ||
+        noOfNights == "" ||
+        roomRate == "" ||
+        advance == "" ||
+        noOfGuests == ""
+    );
+    if (
+      customerName == "" ||
+      phoneNumber == "" ||
+      address == "" ||
+      email == "" ||
+      checkInDate == "" ||
+      checkOutDate == "" ||
+      noOfNights == "" ||
+      roomRate == "" ||
+      advance == "" ||
+      noOfGuests == ""
+    ) {
+      setShowError(true);
+    } else {
+      return true;
+    }
+    console.log(
+      customerName,
+      phoneNumber,
+      address,
+      email,
+      checkInDate,
+      checkOutDate,
+      noOfNights,
+      roomRate,
+      advance,
+      roomRateType,
+      noOfGuests
+    );
+  };
+  useEffect(() => {
+    changeData();
+  }, []);
   return (
     <Modal
       isOpen={isOpen}
@@ -88,11 +194,13 @@ const ModalView = ({ isOpen, setIsOpen, toggleModal, state, type }) => {
             <div className="flex flex-col w-full space-y-4 p-3 bg-gray-50 rounded-xl">
               <div className="flex flex-row space-x-6">
                 <InputView
+                  required={true}
                   label={"Customer Name"}
                   value={customerName}
                   setValue={setCustomerName}
                 />
                 <InputView
+                  required={true}
                   label={"Phone Number"}
                   value={phoneNumber}
                   setValue={setPhoneNumber}
@@ -104,17 +212,29 @@ const ModalView = ({ isOpen, setIsOpen, toggleModal, state, type }) => {
                 />
               </div>
               <div className="flex flex-row space-x-6">
-                <InputView label={"Id No:"} value={idNo} setValue={setIdNo} />
                 <InputView
+                  required={true}
+                  label={"Id No:"}
+                  value={idNo}
+                  setValue={setIdNo}
+                />
+                <InputView
+                  required={true}
                   label={"Address"}
                   value={address}
                   setValue={setAddress}
                 />
-                <InputView label={"Email:"} value={email} setValue={setEmail} />
+                <InputView
+                  required={true}
+                  label={"Email:"}
+                  value={email}
+                  setValue={setEmail}
+                />
               </div>
               <div className="flex flex-row space-x-6">
                 <div className="flex flex-col w-full">
                   <DatePicker
+                    required={true}
                     label={"Check In Date"}
                     setValue={setCheckInDate}
                     value={checkInDate}
@@ -122,6 +242,7 @@ const ModalView = ({ isOpen, setIsOpen, toggleModal, state, type }) => {
                 </div>
                 <div className="flex flex-col w-full">
                   <DatePicker
+                    required={true}
                     label={"Check Out Date"}
                     setValue={setCheckOutDate}
                     value={checkOutDate}
@@ -129,6 +250,7 @@ const ModalView = ({ isOpen, setIsOpen, toggleModal, state, type }) => {
                 </div>
 
                 <InputView
+                  required={true}
                   label={"No. of Nights:"}
                   value={noOfNights}
                   setValue={setNoOfNights}
@@ -175,66 +297,82 @@ const ModalView = ({ isOpen, setIsOpen, toggleModal, state, type }) => {
           </div>
           <div className="my-4 mb-0 flex flex-row space-x-8 border border-gray-700 bg-gray-200 p-4 rounded-xl">
             <InputView
+              required={true}
               label={"Room Rate"}
               value={roomRate}
               setValue={setRoomRate}
             />
             <InputView
+              required={true}
               label={"Advance Payment"}
               value={advance}
               setValue={setAdvance}
             />
             <SelectView
               label={"Room Rate Type"}
-              data={["", "EP", "BB", "MAP", "AP"]}
+              data={["EP", "BB", "MAP", "AP"]}
               setValue={setRoomRateType}
             />
             <InputView
+              required={true}
               label={"No. Of Guests"}
               value={noOfGuests}
               setValue={setNoOfGuests}
             />
           </div>
+          <div className="mt-3">
+            <ErrorMessage
+              message={"Complete all the field with * "}
+              show={showError}
+            />
+          </div>
           {type == "NewRoom" && (
             <div className="flex flex-row space-x-4">
               <button
-                onClick={() =>
-                  checkIn({
-                    customerName,
-                    phoneNumber,
-                    nationality,
-                    idNo,
-                    address,
-                    email,
-                    checkInDate,
-                    checkOutDate,
-                    noOfNights,
-                    arrivedFrom,
-                    goingTo,
-                    purpose,
-                    occupation,
-                    method,
-                    billNo,
-                    vehicleNo,
-                    roomRate,
-                    advance,
-                    roomRateType,
-                    noOfGuests,
-                    roomNumber: state.roomNumber,
-                    roomType: state.type,
-                    roomOriginalPrice: state.price,
-                    discount: state.price - roomRate,
-                    status: "Booked",
-                    uploadedBy: auth.currentUser.uid,
-                  })
-                }
-                style={{ fontSize: smallFont }}
+                onClick={() => {
+                  if (validateData()) {
+                    checkIn({
+                      customerName,
+                      phoneNumber,
+                      nationality,
+                      idNo,
+                      address,
+                      email,
+                      checkInDate: new Date().getTime(),
+                      checkOutDate,
+                      noOfNights,
+                      arrivedFrom,
+                      goingTo,
+                      purpose,
+                      occupation,
+                      method,
+                      billNo,
+                      vehicleNo,
+                      roomRate,
+                      advance,
+                      roomRateType,
+                      noOfGuests,
+                      roomNumber: state.roomNumber,
+                      roomType: state.type,
+                      roomOriginalPrice: state.price,
+                      discount: state.price - roomRate,
+                      status: "Booked",
+                      uploadedBy: auth.currentUser.uid,
+                    });
+
+                    setIsOpen(!isOpen);
+                    setRerender(!rerender);
+                  }
+                }}
+                style={{ fontSize: 12 }}
                 className="bg-green-700 p-2 text-white rounded-xl w-full mt-8 flex-1"
               >
                 Check In
               </button>
               <button
-                onClick={() =>
+                onClick={() => {
+                  console.log(checkInDate);
+                  console.log(checkOutDate);
                   addData({
                     customerName,
                     phoneNumber,
@@ -262,9 +400,12 @@ const ModalView = ({ isOpen, setIsOpen, toggleModal, state, type }) => {
                     discount: state.price - roomRate,
                     status: "Reserved",
                     uploadedBy: auth.currentUser.uid,
-                  })
-                }
-                style={{ fontSize: smallFont }}
+                  });
+
+                  setRerender(!rerender);
+                  setIsOpen(!isOpen);
+                }}
+                style={{ fontSize: 12 }}
                 className="p-2 text-red-500 rounded-xl w-full mt-8 flex-1 border border-red-500"
               >
                 Reserve
@@ -275,44 +416,48 @@ const ModalView = ({ isOpen, setIsOpen, toggleModal, state, type }) => {
             <div className="flex flex-row space-x-4">
               <button
                 onClick={() => {
-                  console.log(state);
-                  checkIn({
-                    customerName,
-                    phoneNumber,
-                    nationality,
-                    idNo,
-                    address,
-                    email,
-                    checkInDate,
-                    checkOutDate,
-                    noOfNights,
-                    arrivedFrom,
-                    goingTo,
-                    purpose,
-                    occupation,
-                    method,
-                    billNo,
-                    vehicleNo,
-                    roomRate,
-                    advance,
-                    roomRateType,
-                    noOfGuests,
-                    roomNumber: state.roomNumber,
-                    roomType: state.roomType,
-                    roomOriginalPrice: state.roomOriginalPrice,
-                    discount: state.roomOriginalPrice - roomRate,
-                    status: "Booked",
-                    uploadedBy: auth.currentUser.uid,
-                    date: new Date(),
-                  });
+                  if (validateData()) {
+                    checkIn({
+                      customerName,
+                      phoneNumber,
+                      nationality,
+                      idNo,
+                      address,
+                      email,
+                      checkInDate: new Date().getTime(),
+                      checkOutDate,
+                      noOfNights,
+                      arrivedFrom,
+                      goingTo,
+                      purpose,
+                      occupation,
+                      method,
+                      billNo,
+                      vehicleNo,
+                      roomRate,
+                      advance,
+                      roomRateType,
+                      noOfGuests,
+                      roomNumber: state.roomNumber,
+                      roomType: state.roomType,
+                      roomOriginalPrice: state.roomOriginalPrice,
+                      discount: state.roomOriginalPrice - roomRate,
+                      status: "Booked",
+                      uploadedBy: auth.currentUser.uid,
+                      date: new Date(),
+                    });
+
+                    setRerender(!rerender);
+                    setIsOpen(!isOpen);
+                  }
                 }}
-                style={{ fontSize: smallFont }}
+                style={{ fontSize: 12 }}
                 className="bg-green-700 p-2 text-white rounded-xl w-full mt-8 flex-1"
               >
                 Check In
               </button>
               <button
-                style={{ fontSize: smallFont }}
+                style={{ fontSize: 12 }}
                 className="border border-red-500 bg-red-200 p-2 text-red-800 rounded-xl w-full mt-8 flex-1"
               >
                 Cancel Reservation
@@ -321,12 +466,14 @@ const ModalView = ({ isOpen, setIsOpen, toggleModal, state, type }) => {
           )}
           {type == "Booked" && (
             <div className="flex flex-row space-x-4">
-              <button
-                style={{ fontSize: smallFont }}
-                className="border border-red-500 bg-red-200 p-2 text-red-800 rounded-xl w-full mt-8 flex-1"
+              <Link
+                to="/room/checkout"
+                state={state}
+                style={{ fontSize: 12 }}
+                className="border border-red-500 bg-red-200 p-2 text-red-800 rounded-xl w-full mt-8 flex-1 text-center"
               >
                 Checkout
-              </button>
+              </Link>
             </div>
           )}
         </div>

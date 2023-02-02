@@ -103,7 +103,16 @@ const EntryRow = ({
   );
 };
 
-const OrderTable = ({ setValue, total, setTotal, state, guests }) => {
+const OrderTable = ({
+  setValue,
+  total,
+  setTotal,
+  state,
+  guests,
+  rerender,
+  setRerender,
+  toggleModal,
+}) => {
   const [numRows, setNumRows] = useState([["", 1, ""]]);
 
   const addNewRow = () => {
@@ -124,6 +133,7 @@ const OrderTable = ({ setValue, total, setTotal, state, guests }) => {
     setNumRows([...arr]);
     getTotal(numRows, setTotal);
   }
+
   return (
     <div className="rounded-xl">
       <div className="flex bg-gray-200 border border-gray-300 p-3">
@@ -184,6 +194,8 @@ const OrderTable = ({ setValue, total, setTotal, state, guests }) => {
             guests: guests,
             date: new Date(),
           });
+          toggleModal();
+          setRerender(!rerender);
         }}
         className="rounded-xl bg-green-700 text-white w-full p-3 mt-5 "
         style={{ fontSize: 10 }}

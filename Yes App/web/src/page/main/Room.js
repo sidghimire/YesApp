@@ -4,55 +4,26 @@ import { ModalProvider } from "styled-react-modal";
 
 import ModalView from "./components/Room/ModalView";
 import { extreSmallFont, largeFont } from "../../theme";
-
-const roomdata = [
-  {
-    roomNumber: 1,
-    roomType: "premium",
-    price: 2400,
-  },
-  {
-    roomNumber: 2,
-    roomType: "regular",
-    price: 2000,
-  },
-  {
-    roomNumber: 3,
-    roomType: "regular",
-    price: 2000,
-  },
-  {
-    roomNumber: 4,
-    roomType: "premium",
-    price: 2400,
-  },
-  {
-    roomNumber: 1,
-    roomType: "premium",
-    price: 2400,
-  },
-  {
-    roomNumber: 2,
-    roomType: "regular",
-    price: 2000,
-  },
-  {
-    roomNumber: 3,
-    roomType: "regular",
-    price: 2000,
-  },
-  {
-    roomNumber: 4,
-    roomType: "premium",
-    price: 2400,
-  },
-];
+import { getRoomList } from "./components/Room/functions/function";
+import { useEffect } from "react";
 
 const Room = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [rerender, setRerender] = useState(false);
+
   function toggleModal(e) {
     setIsOpen(!isOpen);
   }
+
+  const [roomdata, setRoomData] = useState([]);
+  const getAllData = async () => {
+    const arr = await getRoomList();
+    setRoomData(arr);
+  };
+
+  useEffect(() => {
+    getAllData();
+  }, [rerender]);
   return (
     <ModalProvider>
       <div className="w-full h-full">
@@ -65,19 +36,21 @@ const Room = () => {
           </div>
           <button
             onClick={toggleModal}
-            className="rounded-xl bg-blue-800 text-white text-sm py-1 px-8 mt-10 mx-4"
-            style={{ fontSize: extreSmallFont }}
+            className="rounded-xl bg-blue-800 text-white text-sm py-2 px-8 mt-10 mx-4"
+            style={{ fontSize: 12 }}
           >
             Add New Room
           </button>
           <div className="pt-5">
-            <RoomTab />
+            <RoomTab roomdata={roomdata} rerender={rerender} />
           </div>
         </div>
         <ModalView
           isOpen={isOpen}
           setIsOpen={setIsOpen}
           toggleModal={toggleModal}
+          setRerender={setRerender}
+          rerender={rerender}
         />
       </div>
     </ModalProvider>

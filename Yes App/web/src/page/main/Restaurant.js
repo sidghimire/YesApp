@@ -5,6 +5,7 @@ import { RestaurantTab } from "./components/Restaurant/RestaurantTab";
 import { extreSmallFont, largeFont } from "../../theme";
 
 const Restaurant = () => {
+  const [rerender, setRerender] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   function toggleModal(e) {
     setIsOpen(!isOpen);
@@ -27,13 +28,15 @@ const Restaurant = () => {
             Add New Table
           </button>
           <div className="pt-5">
-            <RestaurantTab />
+            <RestaurantTab rerender={rerender} />
           </div>
         </div>
         <ModalView
           isOpen={isOpen}
           setIsOpen={setIsOpen}
           toggleModal={toggleModal}
+          setRerender={setRerender}
+          rerender={rerender}
         />
       </div>
     </ModalProvider>

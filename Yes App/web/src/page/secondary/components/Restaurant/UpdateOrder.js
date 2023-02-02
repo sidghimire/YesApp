@@ -109,7 +109,16 @@ const EntryRow = ({
   );
 };
 
-const UpdateOrder = ({ setValue, total, setTotal, state, guests }) => {
+const UpdateOrder = ({
+  setValue,
+  total,
+  setTotal,
+  state,
+  guests,
+  rerender,
+  setRerender,
+  toggleModal,
+}) => {
   const [numRows, setNumRows] = useState(JSON.parse(state.form.menuData));
   const [isOpen, setIsOpen] = useState(false);
 
@@ -123,7 +132,6 @@ const UpdateOrder = ({ setValue, total, setTotal, state, guests }) => {
     for (let i = 0; i < temp.length; i++) {
       sum = sum + parseInt(temp[i][2]);
     }
-    console.log(sum);
     setTotal(sum);
   };
   function removeRow(n) {
@@ -193,6 +201,7 @@ const UpdateOrder = ({ setValue, total, setTotal, state, guests }) => {
               guests: guests,
               state: state,
             });
+            setRerender(!rerender);
           }}
           className="rounded-xl bg-green-700 text-white w-full p-3 mt-5 "
           style={{ fontSize: 10 }}
@@ -219,6 +228,9 @@ const UpdateOrder = ({ setValue, total, setTotal, state, guests }) => {
         </Link>
       </div>
       <AddToRoomModal
+        toggleModal2={toggleModal}
+        rerender={rerender}
+        setRerender={setRerender}
         tableNumber={state.form.tableNumber}
         orderInfo={numRows}
         isOpen={isOpen}

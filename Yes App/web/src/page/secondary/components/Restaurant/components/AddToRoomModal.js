@@ -5,7 +5,15 @@ import { getTableList } from "../functions/function";
 import { getRoomList } from "../../Room/functions/function";
 import ConfirmTransferModal from "./ConfirmTransferModal";
 
-const AddToRoomModal = ({ isOpen, setIsOpen, orderInfo, tableNumber }) => {
+const AddToRoomModal = ({
+  isOpen,
+  setIsOpen,
+  orderInfo,
+  tableNumber,
+  rerender,
+  setRerender,
+  toggleModal2,
+}) => {
   const [occupiedRoom, setOccupiedRoom] = useState([]);
   const [isOpen2, setIsOpen2] = useState(false);
   const [state, setState] = useState();
@@ -42,6 +50,10 @@ const AddToRoomModal = ({ isOpen, setIsOpen, orderInfo, tableNumber }) => {
       </div>
       {isOpen2 ? (
         <ConfirmTransferModal
+          toggleModal2={toggleModal2}
+          toggleModalFinal={toggleModal}
+          rerender={rerender}
+          setRerender={setRerender}
           tableNumber={tableNumber}
           orderInfo={orderInfo}
           state={state}

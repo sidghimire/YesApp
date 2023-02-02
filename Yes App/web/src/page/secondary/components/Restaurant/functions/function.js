@@ -32,7 +32,6 @@ export const getTableList = async function () {
       }
     }
   });
-  console.log(filterTable);
   const doc1 = collection(db, "tableList");
   if (filterTable.length == 0) {
     filterTable.push("");
@@ -93,10 +92,35 @@ export const assignBillToRoom = async function (data, orderInfo, tableNumber) {
 };
 
 export const confirmCheckout = async function (tableNumber, itemList) {
-  console.log(tableNumber);
-  console.log(itemList);
+  const realRef = ref(database);
+  const arr2 = [];
+  const filterTable = [];
+  let checkInDate = new Date().toISOString().split("T")[0];
 
-  //const collection1 = collection(db, "restaurantSales");
-  //const snap = await addDoc(collection1, itemList);
-  //const snap=await addDoc(collection1,{})
+  await get(
+    child(realRef, `liveRestaurant/table` + tableNumber + `/form`)
+  ).then((snapshot) => {
+    if (snapshot.exists()) {
+      arr2.push(snapshot.val());
+    }
+  });
+  const collection1 = collection(db, "restaurantSales", checkInDate, "history");
+  const snap = await addDoc(collection1, {
+    data: arr2[0],
+    date: serverTimestamp(),
+  });
+  const collection2 = collection(
+    db,
+    "dailyRestaurantRecord",
+    checkInDate,
+    "record"
+  );
+  const snap2 = await addDoc(collection2, {
+    data: arr2[0],
+    date: serverTimestamp(),
+  });
+  try {
+    const ref1 = ref(database, "liveRestaurant/table" + tableNumber);
+    await remove(ref1);
+  } catch {}
 };
