@@ -11,7 +11,7 @@ import { db } from "../../../../config/adminFirebase";
 import { addMenu } from "./functions/function";
 import { extreSmallFont } from "../../../../theme";
 
-const NewMenuEntry = ({ isOpen, toggleModal }) => {
+const NewMenuEntry = ({ isOpen, toggleModal, rerender, setRerender }) => {
   const [foodName, setFoodName] = useState("");
   const [category, setCategory] = useState("");
   const [price, setPrice] = useState("");
@@ -20,7 +20,7 @@ const NewMenuEntry = ({ isOpen, toggleModal }) => {
   const getAllData = async () => {
     const doc1 = collection(db, "menuCategory");
     const snap = await getDocs(doc1);
-    const arr = [];
+    const arr = [""];
     snap.forEach((docs) => {
       const data = docs.data()["category"];
       arr.push(data);
@@ -29,7 +29,7 @@ const NewMenuEntry = ({ isOpen, toggleModal }) => {
   };
   useEffect(() => {
     getAllData();
-  }, []);
+  }, [rerender]);
   return (
     <Modal
       isOpen={isOpen}
@@ -49,6 +49,7 @@ const NewMenuEntry = ({ isOpen, toggleModal }) => {
               onClick={() => {
                 if (addMenu(foodName, category, infoList, price)) {
                   toggleModal();
+                  setRerender(!rerender);
                 }
               }}
             >

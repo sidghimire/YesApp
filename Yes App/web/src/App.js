@@ -8,6 +8,7 @@ import "./App.css";
 
 const App = () => {
   const [userState, setUserState] = useState(0);
+  const [authority, setAuthority] = useState(true);
   onAuthStateChanged(auth, (user) => {
     if (user) {
       if (auth.currentUser.emailVerified) {
@@ -27,7 +28,8 @@ const App = () => {
     return (
       <UserContext.Provider
         value={{
-          admin: false,
+          setAdmin: setAuthority,
+          admin: authority,
           smallFont: 10,
           mediumFont: 14,
           largeFont: 18,

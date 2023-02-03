@@ -27,7 +27,9 @@ const CheckoutRoom = () => {
       orderBillTotal,
       discount: orderBillTotal - displayTotal,
       grandTotal:
-        displayTotal + parseInt(state.noOfNights) * parseInt(state.roomRate),
+        displayTotal +
+        parseInt(state.noOfNights) * parseInt(state.roomRate) -
+        parseInt(state.advance),
     });
   };
   const getAllData = async () => {
@@ -143,12 +145,24 @@ const CheckoutRoom = () => {
             <div className="flex-1 text-black" style={{ fontSize: 13 }}></div>
             <div className="flex-1 text-black" style={{ fontSize: 13 }}></div>
             <div className="flex-1 text-black" style={{ fontSize: 13 }}>
+              Advance
+            </div>
+            <div className="flex-1 text-black" style={{ fontSize: 13 }}>
+              Rs.
+              {parseInt(state.advance)}
+            </div>
+          </div>
+          <div className="bg-gray-400 p-3 flex flex-row">
+            <div className="flex-1 text-black" style={{ fontSize: 13 }}></div>
+            <div className="flex-1 text-black" style={{ fontSize: 13 }}></div>
+            <div className="flex-1 text-black" style={{ fontSize: 13 }}>
               Grand Total
             </div>
             <div className="flex-1 text-black" style={{ fontSize: 13 }}>
               Rs.
               {displayTotal +
-                parseInt(state.noOfNights) * parseInt(state.roomRate)}
+                parseInt(state.noOfNights) * parseInt(state.roomRate) -
+                parseInt(state.advance)}
             </div>
           </div>
           {data.hasOwnProperty("order") ? (

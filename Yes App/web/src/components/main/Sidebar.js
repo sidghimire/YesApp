@@ -7,12 +7,27 @@ import { extreSmallFont, largeFont, mediumFont, smallFont } from "../../theme";
 
 const Sidebar = () => {
   const value = React.useContext(UserContext).admin;
+  const setValue = React.useContext(UserContext).setAdmin;
   return (
     <div className=" w-60 h-screen dark:overflow-auto overflow-auto bg-gray-100 fixed">
       <div className="">
         <Link to="/">
           <div className="text-2xl font-bold tracking-tighter m-7">Nyano</div>
         </Link>
+        <button
+          className="p-3 bg-green-600 text-white mx-auto rounded-xl my-2"
+          onClick={() => setValue(true)}
+          style={{ fontSize: 8 }}
+        >
+          Admin Access
+        </button>
+        <button
+          className="p-3 bg-green-600 text-white  mx-auto rounded-xl my-2"
+          onClick={() => setValue(false)}
+          style={{ fontSize: 8 }}
+        >
+          Front Access
+        </button>
         {value ? (
           <>
             {sidebar.tab.map((val) => (

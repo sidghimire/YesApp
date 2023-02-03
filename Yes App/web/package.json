@@ -1,5 +1,6 @@
 {
   "name": "web",
+  "homepage": "https://sidghimire.com",
   "version": "0.1.0",
   "private": true,
   "dependencies": {

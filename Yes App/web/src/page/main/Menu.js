@@ -19,6 +19,7 @@ let data = [
 ];
 let title = ["Food Name", "Category", "Recipe", "Price"];
 const Menu = () => {
+  const [rerender, setRerender] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isOpenNew, setIsOpenNew] = useState(false);
   const [dataList, setDataList] = useState([]);
@@ -41,7 +42,7 @@ const Menu = () => {
   };
   useEffect(() => {
     getMenuData();
-  }, []);
+  }, [rerender]);
   return (
     <ModalProvider>
       <div className="w-full h-full">
@@ -73,8 +74,15 @@ const Menu = () => {
           <DataFrame data={dataList} title={title} />
         </div>
 
-        <NewMenuEntry isOpen={openPurchaseBill} toggleModal={toggleModal3} />
+        <NewMenuEntry
+          rerender={rerender}
+          setRerender={setRerender}
+          isOpen={openPurchaseBill}
+          toggleModal={toggleModal3}
+        />
         <NewCategory
+          rerender={rerender}
+          setRerender={setRerender}
           isOpen={openAddCategory}
           setIsOpen={setAddCategory}
           toggleModal={toggleModal2}

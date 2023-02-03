@@ -7,8 +7,8 @@ import {
 } from "firebase/auth";
 
 export const createNewAccount = async (email, password) => {
-  await createUserWithEmailAndPassword(auth, email, password);
-  sendEmailVerification(auth.currentUser);
+  // await createUserWithEmailAndPassword(auth, email, password);
+  //sendEmailVerification(auth.currentUser);
   signOut(auth);
 };
 export const signIn = async (email, password) => {
