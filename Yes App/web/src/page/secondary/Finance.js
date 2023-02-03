@@ -38,7 +38,7 @@ const Finance = () => {
         </div>
         <Link
           to="/dailyBook"
-          className="rounded-xl bg-blue-800 text-white text-sm py-2 px-8 mt-10 mx-4"
+          className="rounded-xl bg-green-800 text-white text-sm py-2 px-8 mt-10 mx-4"
           style={{ fontSize: 12 }}
         >
           Daily Book

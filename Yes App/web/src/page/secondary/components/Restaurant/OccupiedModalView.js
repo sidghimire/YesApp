@@ -23,6 +23,7 @@ const OccupiedModalView = ({
   const [total, setTotal] = useState();
   const [value, setValue] = useState();
   const [guests, setGuests] = useState();
+  const [billNo, setBillNo] = useState();
   const fixData = () => {
     setGuests(state.form ? state.form.guests : "");
   };
@@ -48,12 +49,13 @@ const OccupiedModalView = ({
               {state.form ? state.form.tableNumber : ""}
             </div>
           </div>
-          <div className=" px-5 w-full">
+          <div className=" px-5 w-full flex flex-row space-x-4">
             <InputView
               label={"No. of Guests"}
               value={guests}
               setValue={setGuests}
             />
+            <InputView label={"Bill No."} value={billNo} setValue={setBillNo} />
           </div>
         </div>
         <div className="px-3 py-4">
@@ -66,6 +68,7 @@ const OccupiedModalView = ({
             setTotal={setTotal}
             setValue={setValue}
             guests={guests}
+            billNo={billNo}
           />
         </div>
       </div>

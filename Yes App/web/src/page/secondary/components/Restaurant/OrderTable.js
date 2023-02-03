@@ -109,6 +109,7 @@ const OrderTable = ({
   setTotal,
   state,
   guests,
+  billNo,
   rerender,
   setRerender,
   toggleModal,
@@ -192,6 +193,7 @@ const OrderTable = ({
             tableNumber: state.tableNumber,
             total: total,
             guests: guests,
+            billNo: billNo,
             date: new Date(),
           });
           toggleModal();

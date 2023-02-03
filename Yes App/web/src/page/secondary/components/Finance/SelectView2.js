@@ -25,7 +25,10 @@ const SelectView2 = ({ label, data, setValue, required }) => {
       >
         <option className="capitalize" value={""}></option>
         {data.map((d1) => (
-          <option className="capitalize" value={d1.number}>
+          <option
+            className="capitalize"
+            value={JSON.stringify({ name: d1.name, number: d1.number })}
+          >
             {d1.name} ({d1.number.slice(-3).padStart(d1.number.length, "*")})
           </option>
         ))}

@@ -104,22 +104,80 @@ const NavigateFinal = function () {
 };
 
 export const confirmCheckout = async function (data) {
-  const temp = data;
-  temp.data.order = JSON.stringify(data.data.order);
-  let checkInDate = new Date(data.data.checkInDate).toISOString().split("T")[0];
-  let checkOutDate = new Date().toISOString().split("T")[0];
-  const doc1 = collection(db, "roomHistory", checkInDate, "history");
-  const snap = await addDoc(doc1, temp);
-  const doc2 = collection(db, "dailyRoomRecord", checkOutDate, "record");
-  const snap2 = await addDoc(doc2, temp);
-  try {
-    const ref1 = ref(database, "liveBooking/checkIn" + data.data.roomNumber);
-    await remove(ref1);
-  } catch {}
-  const ref1 = ref(database, "liveDirty/dirty" + data.data.roomNumber);
-  await set(ref1, {
-    roomNumber: data.data.roomNumber,
-    price: data.data.roomOriginalPrice,
-    roomType: data.data.roomType,
-  });
+  if (data.data.order != null) {
+    const temp = data;
+    temp.data.order = JSON.stringify(data.data.order);
+    let localString = new Date(data.data.checkInDate).toLocaleDateString();
+    let parts = localString.split("/");
+
+    // pad the month and day with leading zeros if necessary
+    let month = ("0" + parts[0]).slice(-2);
+    let day = ("0" + parts[1]).slice(-2);
+    let year = parts[2];
+
+    var checkInDate = `${year}-${month}-${day}`;
+
+    let localString2 = new Date().toLocaleDateString();
+    let parts2 = localString2.split("/");
+
+    // pad the month and day with leading zeros if necessary
+    let month2 = ("0" + parts2[0]).slice(-2);
+    let day2 = ("0" + parts2[1]).slice(-2);
+    let year2 = parts2[2];
+
+    var checkOutDate = `${year2}-${month2}-${day2}`;
+    const doc1 = collection(db, "roomHistory", checkInDate, "history");
+
+    const snap = await addDoc(doc1, temp);
+    const doc2 = collection(db, "dailyRoomRecord", checkOutDate, "record");
+    const snap2 = await addDoc(doc2, temp);
+    try {
+      const ref1 = ref(database, "liveBooking/checkIn" + data.data.roomNumber);
+      await remove(ref1);
+    } catch {}
+    const ref1 = ref(database, "liveDirty/dirty" + data.data.roomNumber);
+    await set(ref1, {
+      roomNumber: data.data.roomNumber,
+      price: data.data.roomOriginalPrice,
+      roomType: data.data.roomType,
+    });
+  } else {
+    const temp = data;
+    temp.data.order = JSON.stringify([]);
+
+    let localString = new Date(data.data.checkInDate).toLocaleDateString();
+    let parts = localString.split("/");
+
+    // pad the month and day with leading zeros if necessary
+    let month = ("0" + parts[0]).slice(-2);
+    let day = ("0" + parts[1]).slice(-2);
+    let year = parts[2];
+
+    var checkInDate = `${year}-${month}-${day}`;
+
+    let localString2 = new Date().toLocaleDateString();
+    let parts2 = localString2.split("/");
+
+    // pad the month and day with leading zeros if necessary
+    let month2 = ("0" + parts2[0]).slice(-2);
+    let day2 = ("0" + parts2[1]).slice(-2);
+    let year2 = parts2[2];
+
+    var checkOutDate = `${year2}-${month2}-${day2}`;
+    const doc1 = collection(db, "roomHistory", checkInDate, "history");
+
+    const snap = await addDoc(doc1, temp);
+    const doc2 = collection(db, "dailyRoomRecord", checkOutDate, "record");
+    const snap2 = await addDoc(doc2, temp);
+    try {
+      const ref1 = ref(database, "liveBooking/checkIn" + data.data.roomNumber);
+      await remove(ref1);
+    } catch {}
+    const ref1 = ref(database, "liveDirty/dirty" + data.data.roomNumber);
+    await set(ref1, {
+      roomNumber: data.data.roomNumber,
+      price: data.data.roomOriginalPrice,
+      roomType: data.data.roomType,
+    });
+  }
 };

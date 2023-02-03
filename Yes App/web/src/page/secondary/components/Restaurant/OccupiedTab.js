@@ -21,7 +21,7 @@ export const OccupiedTab = ({ tableData, rerender, setRerender }) => {
               toggleModal();
             }}
           >
-            <div className="border border-green-700 bg-green-200 w-24 h-24 rounded-2xl flex flex-col p-4">
+            <div className="border border-green-700 bg-green-200 w-24 h-24 rounded-2xl flex flex-col p-4 m-3">
               <div className="ml-auto">
                 <IoEllipsisVertical size={12} />
               </div>

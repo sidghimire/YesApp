@@ -76,6 +76,7 @@ export const updateOrderData = async function (data) {
       menuData: JSON.stringify(data.menuData),
       tableNumber: data.tableNumber,
       total: data.total,
+      billNo: data.billNo,
     },
   });
 };
@@ -95,7 +96,15 @@ export const confirmCheckout = async function (tableNumber, itemList) {
   const realRef = ref(database);
   const arr2 = [];
   const filterTable = [];
-  let checkInDate = new Date().toISOString().split("T")[0];
+  let localString = new Date().toLocaleDateString();
+  let parts = localString.split("/");
+
+  // pad the month and day with leading zeros if necessary
+  let month = ("0" + parts[0]).slice(-2);
+  let day = ("0" + parts[1]).slice(-2);
+  let year = parts[2];
+
+  var checkInDate = `${year}-${month}-${day}`;
 
   await get(
     child(realRef, `liveRestaurant/table` + tableNumber + `/form`)

@@ -118,6 +118,7 @@ const UpdateOrder = ({
   rerender,
   setRerender,
   toggleModal,
+  billNo,
 }) => {
   const [numRows, setNumRows] = useState(JSON.parse(state.form.menuData));
   const [isOpen, setIsOpen] = useState(false);
@@ -200,6 +201,7 @@ const UpdateOrder = ({
               total: total,
               guests: guests,
               state: state,
+              billNo: billNo,
             });
             setRerender(!rerender);
           }}

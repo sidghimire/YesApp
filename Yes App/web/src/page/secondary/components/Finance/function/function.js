@@ -34,11 +34,15 @@ export const getShakariInfo = async function (bank) {
 };
 
 export const deposit = (bank) => {
-  const collection1 = collection(
-    db,
-    "deposit",
-    new Date().toISOString().split("T")[0],
-    "record"
-  );
+  let localString2 = new Date().toLocaleDateString();
+  let parts2 = localString2.split("/");
+
+  // pad the month and day with leading zeros if necessary
+  let month2 = ("0" + parts2[0]).slice(-2);
+  let day2 = ("0" + parts2[1]).slice(-2);
+  let year2 = parts2[2];
+
+  var checkOutDate = `${year2}-${month2}-${day2}`;
+  const collection1 = collection(db, "deposit", checkOutDate, "record");
   const snap = addDoc(collection1, { bank, time: serverTimestamp() });
 };

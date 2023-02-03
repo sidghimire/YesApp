@@ -70,11 +70,13 @@ export const RoomTab = ({
         <div className=" pb-0 mt-4 text-xl" style={{ fontSize: 12 }}>
           Dirty Room
         </div>
-        {dirty.map((item) => (
-          <div className="p-4">
-            <RoomCardDirty item={item} />
-          </div>
-        ))}
+        <div className="flex flex-row flex-wrap">
+          {dirty.map((item) => (
+            <div className="p-4">
+              <RoomCardDirty item={item} />
+            </div>
+          ))}
+        </div>
       </div>
       {isOpen ? (
         <ModalView

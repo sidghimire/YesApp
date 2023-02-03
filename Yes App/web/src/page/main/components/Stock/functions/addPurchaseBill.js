@@ -31,12 +31,16 @@ export const addPurchaseBill = async function (
     total,
     list: JSON.stringify(listInfo),
   });
-  const doc2 = collection(
-    db,
-    "dailyRecord",
-    new Date(billDate).toISOString().split("T")[0],
-    "record"
-  );
+  let localString = new Date(billDate).toLocaleDateString();
+  let parts = localString.split("/");
+
+  // pad the month and day with leading zeros if necessary
+  let month = ("0" + parts[0]).slice(-2);
+  let day = ("0" + parts[1]).slice(-2);
+  let year = parts[2];
+
+  var searchDate = `${year}-${month}-${day}`;
+  const doc2 = collection(db, "dailyRecord", searchDate, "record");
   const snap2 = await addDoc(doc2, {
     billNumber,
     billDate,
