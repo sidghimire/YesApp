@@ -11,7 +11,7 @@ const MainRouter = () => {
 
   return (
     <div className="">
-      <BrowserRouter>
+      <BrowserRouter basename="/">
         <div className="flex flex-row">
           <div className="w-60">
             <Sidebar />

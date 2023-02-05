@@ -6,7 +6,7 @@ import Signup from "../page/Authentication/Signup";
 const AuthRouter = () => {
   return (
     <div>
-      <BrowserRouter>
+      <BrowserRouter basename="/">
         <Routes>
           <Route path="/" element={<Signin />} />
           <Route path="/signup" element={<Signup />} />
